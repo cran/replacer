@@ -1,0 +1,10 @@
+vars,oldVals,newVals,id,source
+a,,ZZ,2,source1
+a,,CC,8,source2
+a,cc,DD,0,source3
+a,mm,UU,9,source4
+a,cc,CA,12,source5
+a,,YES,,source6
+b,1.607,1.1,0,source7
+b,1.607,8.8,7,source8
+b,,999,,source9

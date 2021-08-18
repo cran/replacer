@@ -1,0 +1,12 @@
+vars,oldVals,newVals
+a,cc,DUP VALUE_1
+a,,NOT  PRESENT
+a,mm,UU
+a ,ee,EE
+a,jj,JJ
+b,1.607,8.888
+b,,999
+b,2.142,1.111
+c,-1.8,-0.001
+c,,999
+d ,15,5555

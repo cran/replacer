@@ -1,0 +1,13 @@
+vars,oldVals,newVals
+a,,UniqueMiss
+a,cc,GGG
+a,ee,EE
+a ,jj,JJ
+a,mm,MM
+b,,999
+b,1.607,8.888
+b,2.142,1.111
+b,-4.979,-1.234
+c,,7777
+d ,15,5555
+d ,,999

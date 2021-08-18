@@ -1,0 +1,477 @@
+---
+title: "Update Datasets With replacer"
+author: "Dragos Bandur"
+date: "`r Sys.Date()`"
+bibliography: "citation.bib"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 1
+toc_includes:
+  fontawesome5: yes
+vignette: >
+  %\VignetteIndexEntry{Update Datasets With replacer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
+  \usepackage{color}
+  \usepackage[backend=biber,natbib=true, style=mla]{biblatex}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  root.dir = "C:/Users/Dragos/Desktop/projects",
+  collapse = TRUE,
+  comment = "#>", 
+  out.width = "100%",
+  tidy.opts = list(width.cutoff = 120),
+  tidy = TRUE,
+  if (any(!requireNamespace("data.table", quietly = TRUE))) {
+  knitr::opts_chunk$set(eval = FALSE)
+}
+ )
+pks = c('data.table', 'magrittr', 'knitr', 'kableExtra', 'replacer')
+if(!any(pks %in% search())) {
+invisible(lapply(pks, require, character.only = TRUE))
+}
+```
+
+# Introduction
+
+<font font_family="courier new">`replacer`</font>, a value replacement utility currently based on package  [<font family="courier">`data.table`</font>](https://CRAN.R-project.org/package=data.table), is intended for outside-database update of data. It requires the preparation of a *lookup* file which is a list of replacement *requests* with and, in special circumstances, without an *index* column.
+
+The input and output data files are comma-separated values file format (*csv*). Various other file formats can therefore be processed upon conversion.
+
+Data processing such as cleanup, file format conversion and the appendage of new data are outside the scope of this utility.
+
+There could be several lookup files associated with one data file and vice versa which will be batch-processed. 
+
+This vignette defines the terms related to replacement and to the elements of the lookup file, and details the procedure of creating an efficient lookup file, suggesting ways to maintain it relevant. Continues by introducing the two User-intended functions for single file and batch file processing and their internal workflow. Finally, it presents a screen output result obtained with a lookup without index and describes the datasets used in examples.
+
+## Motivation
+
+This utility is designed for beginners to `R` working with outside-database files. It facilitates complex dataset updates with minimal prompt time. 
+
+The choice for `data.table` is motivated by its concise and sound code, effectiveness and efficiency in processing large and complex datasets, and its independence on packages, or *verse*s, [other than base `R` itself](https://www.rdocumentation.org/packages/data.table/versions/1.14.0); this utility will only install `data.table` on User's machine if it had not been there already.
+
+Familiarity with basic `R` commands is necessary. Familiarity with `data.table` is not, yet strongly recommended!
+
+<div style="margin-top:30px;">
+
+# Definitions
+
+</div>
+
+The following terms are specific to this utility:
+
+  - **lookup** table: a csv format data file containing at least 4 standard columns with standard column names:
+ 
+    * "**vars**": names of data columns involved in value replacement
+    * "**oldVals**": values set for replacement found in the data file
+    * "**newVals**": replacement values associated with **oldVals**
+    * "**id**": index containing row numbers and special values such as 0, NA (or empty)
+
+  - **simple (or 1:1) replacement**: one value from **newVals** replaces one value from **oldVals**
+  
+  - **multiple (or 1:many) replacement**: one value from **newVals** replaces identical values from **oldVals**
+  
+  - **split**: in this context, recursive partition of multiple replacements into simple and multiple replacements
+    
+  - **generic value**: restricted replacement value used for multiple replacements of missing data
+  
+  - **involved column**: data column with the name listed in **vars** column of lookup
+
+  - **request**: implicit information containing value type, value missingness, value uniqueness, value location, replacement type, replacement value in one row spanning the standard columns of lookup
+  
+Lookup may contain a combination of simple and multiple replacements, simple replacements only, multiple replacements only (i.e. missing only, duplicated values only, or mixed) as needed. Multiple replacements can be split as needed.
+    
+On special circumstances, column "**id**" may be absent from lookup while the presence of the other three standard columns is mandatory. Modifying standard columns' names will result in error. Any extra columns in lookup will be automatically removed during internal conformance checks on lookup.
+  
+Multiple replacements apply to missing or duplicated non-missing values. While replacement values of duplicated values could be regarded as generic, they are entirely decided by the User. They are not restricted in this sense. 
+
+In this version, replacements of missing data are restricted to words formed with the word roots *MIS|mis, PRE|pre, UN|un, ABS|abs* and the adverbs *YES|yes, NO|no* for missing values of type character, and with a number equal to- or larger than 3 integer **9**s (i.e. 999, 9999 etc.) for missing values of double or integer types. 
+
+Short sentences beginning with any word root or adverb above may be accepted.
+
+<div style="margin-top:30px;">
+
+# Example
+
+</div>
+
+Typical data replacement workflow: the initial data file and the corresponding lookup file (here named *"data.csv"* and *"lookup.csv"*) are saved in a directory, here named *dir*. Once the packaged is installed, the following commands should be typed at the `R` prompt:
+
+```
+> require(replacer)
+> dir = 'C:/path/to/directory'
+> replaceVals(dir) ## to update the data
+```
+
+Results will show on screen (Section "Screen Output Example" presents the output of a different data/lookup pair). A csv file similar to *Out-Data* is saved on *dir*. 
+
+```{r echo = FALSE, message = FALSE}
+ll = lapply(c('data_id_vig.csv', 'lookup_id_vig.csv', 'outData.csv'), fread)
+    dat = ll[[1]]; orderDat = names(copy(dat))
+     lk = ll[[2]]; orderLk = names(copy(lk))
+   odat = ll[[3]]; orderOdat = names(copy(odat))
+ dat$Rw = seq_len(nrow(dat)); setcolorder(dat, neworder = c('Rw', orderDat))
+  lk$Rw = seq_len(nrow(lk)); setcolorder(lk, neworder = c('Rw', orderLk))
+odat$Rw = seq_len(nrow(odat)); setcolorder(odat, neworder = c('Rw', orderOdat))
+```
+  
+<div style="margin-bottom:430px;">
+```{r tables, echo = FALSE, message = FALSE}
+options(knitr.kable.NA = "")
+kable(dat, format = 'html', caption = '*In-Data*', escape = TRUE, digits = 1) %>% 
+  kable_styling('striped', full_width = FALSE, position = 'float_left', font_size = 10)
+kable(lk, format = 'html', caption = 'Lookup', escape = TRUE, digits = 1) %>%
+  kable_styling('hover', 'stripped', 'responsive', full_width = FALSE, position = 'float_left', font_size = 10)
+kable(odat, format = 'html', caption = '*Out-Data*', escape = TRUE, digits = 1) %>%
+  kable_styling('striped', full_width = FALSE, position = 'float_left', font_size = 10)
+```   
+
+</div>
+
+This small example covers the complete set of lookup requests with index present. Column "**Rw**" is here for convenience only. It should not be manually created. 
+
+The left-hand side table *In-Data* contains 3 columns of data. The two columns  ("**a**" and "**b**"), involved in replacements, are of character respectively, of numeric data types and both contain missing, duplicates and unique values. The "**uninvlvd**" column in *In-Data*, is not listed in lookup's **vars** therefore, not involved in replacements and remains unchanged in *Out-Data*. Non-standard column **source** in *Lookup* is not standard hence, is automatically removed.
+
+The *Out-Data* result requires a User-made lookup file with index; the replacement requests are as follows:
+ 
+  - simple replacements: missing and non-missing values at rows 2, 7, 8, 9 and 12
+  - multiple replacements:
+    * of duplicated values (**id** = **0**) at rows 3, 6, and 9
+    * of missing values (**id** = **empty**) at rows 7, 10, 11 and 12
+  - split replacements: for example, column "**a**" undergoes a split on the duplicated value "cc" present in 3 rows of *In-Data*; a potential multiple replacement of length 3 was split in a length 2 multiple replacement at rows 3 and 6 replaced by "DD" and a simple replacement at row 12 replaced by "CA".
+
+<div style="margin-top:30px;">
+
+# User-made Index In Lookup
+
+</div>
+
+A User-made index may or, may not be necessary in lookup:
+
+## Lookup With User-made Index
+
+A User-made index is the safest data value replacement procedure; it requires little insight in the structure of the data and insures fast review of large datasets. When the full range of request types including splitting are present, the index should contain the types of values presented in the above example, in the lookup column **id**. 
+
+### Zero Value Present
+
+There could be several distinct sets of duplicated values in any data column. If the purpose is multiple replacements of any/all of these sets (or subsets of these sets) then, for each subset the replacement request should take only one row in lookup, having **0** as index value. Corresponding replacement values are at User's discretion. 
+
+### Empty (NA) Value Present
+
+Same rules as above apply to multiple replacement of sets of missing values with two differences: 1) the corresponding index value is empty or NA, and 2) the generic value is restricted to a word or short sentence starting with any word root or adverb listed in "Definitions". For generic values of numeric type, data type preservation (see **Note 2**) is not required (i.e. it is not required to enter 9999.0 instead of 9999 in the **id** row corresponding to missing values of double data type). 
+
+Further versions may bring more generic value customization if necessary.
+
+### Row Number Present
+
+To request simple replacements, whether having unique, duplicated or missing values in **oldVals** column, the index should contain the corresponding row number in the data file. Sorting lookup by **vars** would maintain focus on one data column at a time.
+
+Standard columns **oldVals** and **newVals** in lookup, revert to the character data type upon completion since they contain combined numeric and character values. This behavior is normal.
+
+In conclusion, a User-made index covers all types of replacements, including splits. 
+
+## Lookup Without User-made Index
+
+There are special circumstances when the index is absent in lookup:
+
+### Index <span style='color: red;'>Must</span> Be Absent In Lookup
+
+There is no need for index when lookup contains *only* multiple replacement requests of missing and/or duplicated values (Section "Example Datasets"). An extension of this case regarding splitting on missing values is explained in the sub-section below.
+
+### Index <span style='color: red;'>May</span> Be Absent In Lookup
+
+This case requires a deeper insight in the structure of data file; when used standalone, helper function `whichDups()`, part of this utility, finds the duplicated values in all data columns.
+
+The requirements for an effective lookup table without index are:
+
+  - rows in lookup *must* have the same succession the values set for replacement have in any involved data column
+
+  - simple replacements: if values set for replacement within any involved data column are unique (either missing or not), simple replacements without index are possible
+    
+  - mixed simple and multiple replacements <span style='color: red;'>*which do not undergo*</span> splitting on any involved data column: if any involved data column contains unique, duplicated and/or missing values *and* some or all of the duplicated and/ missing values are set for multiple replacements(or not at all), replacements without index are possible
+    
+  - splitting: not implemented for duplicated values. For missing values splitting is allowed (see **Note 3**)
+    
+**Note 1** Whether the index is present or not in lookup, at the time of run the row order in the data file is identical to the row order in the data file at the completion of lookup. If necessary, an index named *other than id* could be built inside the dataset. Re-ordering the dataset by this index before run will retrieve the row order at the completion of lookup and will keep lookup relevant for future updates.
+    
+**Note 2** User should preserve the data type between values set for replacement and their replacements (i.e. integer/double to integer/double etc.). If an error message similar to "*Item 2 is type integer but the first item is type double. Please coerce ...*" appears on screen, it means that 1) the requirement was violated and that 2) the helper function `con2fcoales()`, part of this utility, was unable to execute the necessary conversion. In cases like this, the User should start by investigating the data and the associated lookup.
+
+**Note 3** Due to their special type, splitting on missing values *across* data columns is allowed when index is absent, i.e. if one involved data column contains one missing value and other involved columns contain missing values set (or not) for multiple replacements, splitting is allowed and the unique missing value can be replaced with a non-generic replacement value.
+
+<div style="margin-top:30px;">
+
+# Functions Intended For User
+
+</div>
+
+There are two functions designed for direct use and set to display a series of messages and comments informing the User on the computational path taken and on findings along the way. While the messages can be turned off, the comments remain visible. 
+
+Single file replacements are processed with function `replaceVals()`. When data and lookup files are named simply *"data.csv"* and *"lookup.csv"* the function only requires the path to the directory where these files are stored, written as length **1** quoted character, with forward "**/**" or, double backward "**\\\\**" slash and without end slash.
+
+At start, this function performs a series of conformance checks on lookup, excludes non-standard columns then separates the data into involved and uninvolved columns, rejoining them on exit.
+
+Batch file replacements are processed with function `bReplace()`. When messages are set to **TRUE** it offers an almost full range of messages/comments for each data/lookup input pair and request type. During run `bReplace()` calls `replaceVals()` function as many times as data/lookup pairs are on the list, displaying a counted list of messages, comments and data for each input pair.
+
+Both functions save their updated data to the directory above, in csv file format.
+
+<div style="margin-top:30px;">
+
+# Internal Workflow
+
+</div>
+
+Helper function `sReplace()` (described in Manual) is the data replacement workhorse for this utility. When called by `replaceVals()`, it firstly checks for index presence in lookup. Upon the result, the function moves along the branches of a decision tree:
+
+## If The Index Is Found Absent
+
+The function starts by identifying duplicated and/or missing values within the involved columns as well as eventual splits on missing values.
+
+If lookup requires multiple and simple replacements, the function separates lookup into 3 subsets: 1) of multiple replacements for duplicated values, for which it later creates an internal index, 2) multiple replacements for missing values for which an internal index is not necessary, and 3) the remainder subset containing unique values, including unique missing values, for which it also creates an internal index. 
+
+In case of splitting on duplicated values with no index the function stops with an error.
+ 
+### Index For Duplicated Values
+
+The function creates an internal index of row numbers corresponding to all elements of distinct subsets of duplicated values found within each involved data column and loops the function `data.table::set()` for replacements.
+ 
+### No Index For Missing Values
+
+As mentioned above, no index is created for multiple replacements of missing values as there is only one generic value per data column (this utility uses no information on missing data beside the data type. For a different approach on this subject the User is directed to *data imputation* literature). 
+
+The subset of missing values is then *reshaped*, and the columns are *coalesced* (please check `data.table` Manual for these terms) with corresponding data columns, for each generic value present in lookup.
+
+### Index For Unique Values
+
+As stated above, simple replacements of unique values without User-made index are possible. Once the internal index is created, this subset is *reshaped*, *joined* with the data on index and then, the corresponding columns are *coalesced*.
+
+## If The Index Is Found Present
+
+The function subsets the lookup using the special index values **0** and/or **NA** (or empty). At maximum, 3 subsets are formed as above. The replacement process is similar with the process used for absent index with the difference that unique values already have the User-made index of row numbers. 
+
+In conclusion, whether single or batch file processing, all request types are processed in one run while the User can monitor the internal workflow.
+
+<div style="margin-top:30px;">
+
+# Screen Output Example
+
+</div>
+
+<div style="margin-bottom:20px;">
+
+Presented below is an update of the "Chile" dataset from package `carData`. 
+
+Type at the `R` prompt:
+
+```
+> help(Chile, package = "carData")
+> require(replacer)
+> dir = system.file("extdata", package = "replacer")
+> replaceVals(dir, 'chile.csv', 'chile_nadup.csv', save = FALSE)
+```
+</div>
+
+<div style="margin-bottom:30px;">
+
+```
+reading data from: C:/R/R-4.1.0/library/replacer/extdata ...
+
+completed reading data ...
+
+checking standard columns in lookup ...
+
+starting replacements ...
+
+found no request for 1:1 replacements ...
+
+searching for 1:many replacements ...
+
+found request for multiple duplicated value replacments: creating index ...
+
+replacing multiple duplicated values ...
+
+found request for multiple missing value replacements: replacing ...
+
+helper function has completed!
+
+$` updated_chile_using_chile_nadup`
+              region population    sex age      education income statusquo       vote
+   1:          North     200000   Male  65        Primary  35000   1.00820         Y
+   2:          North     200000   Male  29 Post-secondary   7500  -1.29617         N
+   3:          North     200000 Female  38        Primary  15000   1.23072         Y
+   4:          North     200000 Female  49        Primary  35000  -1.03163         N
+   5:          North     200000 Female  23      Secondary  35000  -1.10496         N
+  ---                                                                                       
+2696: Metro Santiago      15000   Male  42        Primary  15000  -1.26247         N
+2697: Metro Santiago      15000 Female  28        Primary  15000   1.32950         Y
+2698: Metro Santiago      15000 Female  44        Primary  75000   1.42045         Y
+2699: Metro Santiago      15000   Male  21      Secondary  75000   0.18315 PREFERS NO ANSWER
+2700: Metro Santiago      15000   Male  20 Post-secondary  35000   1.38179         Y
+
+$` multiple_dups_repl_counts`
+          vars oldVals          newVals education population region  sex
+ 1:  education       P          Primary      1107         NA     NA   NA
+ 2:  education      PS   Post-secondary       462         NA     NA   NA
+ 3:  education       S        Secondary      1120         NA     NA   NA
+ 4: population  175000           200000        NA        140     NA   NA
+ 5: population   25000            50000        NA        360     NA   NA
+ 6:     region       C          Central        NA         NA    600   NA
+ 7:     region       M   Metro Santiago        NA         NA    100   NA
+ 8:     region       N            North        NA         NA    322   NA
+ 9:     region       S            South        NA         NA    718   NA
+10:     region      SA City of Santiago        NA         NA    960   NA
+11:        sex       F           Female        NA         NA     NA 1379
+12:        sex       M             Male        NA         NA     NA 1321
+
+$` multiple_NAs_repl_counts`
+    region population        sex        age  education     income  statusquo       vote 
+         0          0          0          1         11         98         17        168 
+```
+
+</div>
+
+This update replaced the abbreviations used in the source data with full names and complete words, as well as, updated the **population** totals on few regions with fictitious values. For exemplification, missing values in column **vote** were replaced by a short sentence using the word root "*PRE*" listed above. 
+
+The requests were processed through a lookup table without User-made index.
+
+The first output block named "*updated_chile_using_chile_nadup*" displays the head and the tail of the updated data file.
+
+To view the complete updated dataset on screen, type:
+
+```
+> upData = replaceVals(dir, 'chile.csv', 'chile_nadup.csv', save = FALSE)[[1]]
+> View(upData)
+```
+
+Next block, named "*multiple_dups_repl_counts*", displays a count of duplicated value updates, processed on each involved column, by value and replacement value. In this example, the left-hand side of this block contains the complete cases of lookup. 
+
+Finally, the third block named "*multiple_NAs_repl_counts*" shows counts of missing values replaced by generic values within respective involved columns. In other cases, unrequested replacements within any of the involved columns will be commented in the screen output (see Examples `replaceVal()`). 
+
+All block names change upon input and request type. 
+
+In case of error, a first read of the displayed messages/comments should hint of where in the process the error was triggered.
+
+<div style="margin-top:30px;">
+
+# Example Datasets
+
+</div>
+
+```{r dups_in_examples, include=FALSE, warning=FALSE}
+ dir = system.file('extdata', package = 'replacer')
+ inData = list.files(dir)
+ inData = inData[grep('.csv', inData)]
+ inData = inData[-grep('chile_id|chile_nadup|lookup', inData)]
+ lData = lapply(inData, function(i) paste0(dir,'/', i))
+ data = lapply(lData, fread, na.strings = c(NA_character_, ''))
+ n.chile = data$chile[, lapply(.SD, function(i) {sum(duplicated(i))/length(i)})]
+ names(data) = unlist(strsplit(inData, split = '.csv', fixed = TRUE))
+ ldup = lapply(data, function(i) whichDups(i)[length(i) > 0])
+ ldup$chile = sample(ldup$chile, size = 4, prob = n.chile)
+ nams = names(ldup) = names(data)
+ # Tables
+ DUPS = lapply(nams, function(n) {kable(t(ldup[[n]])
+                                        , format = 'html'
+                                        , align='c'
+                                        , caption = 'Duplicated')
+        })
+ NAS = lapply(nams, function(n) {kable(t(data[[n]][, colSums(is.na(.SD))])
+                                        , format = 'html'
+                                        , align='c'
+                                        , caption = 'Missing')
+       })
+ names(DUPS) = paste0(nams, 'DUP')
+  names(NAS) = paste0(nams, 'NA')
+```
+
+The datasets in this package cover situations encountered in practice. They contain fictitious values inserted for exemplification purpose with the exception of "*chile*" dataset, a copy of the "Chile" dataset from package `carData`; some value replacements within the associated lookup files are also fictitious.
+
+The batch-file example (function `bReplace()`) includes data and associated lookup files presented below. Duplicated values and counts of missing values are shown for all these datasets. Column name indexing appears when several distinctive subsets of duplicated values are present in respective column.
+
+## Data And Associated Lookup Files With Index
+
+  <div style="margin-bottom:10px;">
+
+ - The "*data_id*" dataset 
+
+ <div style="margin-bottom:30px;">
+ 
+```{r echo = FALSE, results = 'asis'}
+ cat(c('<table><tr valign="top"><td>', DUPS$data_idDUP , '</td><td>', NAS$data_idNA, '</td><tr></table>'), sep = '')
+```
+  
+</div>
+
+Associated lookup files:
+
+"*lookup_id.csv*": mixed simple/multiple replacements of unique, duplicated and missing data, similar to the first example. The file contains standard columns only. 
+
+"*lookup_idsimple.csv*": simple replacements without **0** or **NA** values in "**id**". The file contains standard columns only.
+
+ - The '*chile*' dataset. Since these data contain large subsets of duplicated values, only a very small sample is shown below.
+
+  <div style="margin-bottom:30px;">
+ 
+```{r echo = FALSE, results = 'asis'}
+ cat(c('<table><tr valign="top"><td>', DUPS$chileDUP , '</td><td>', NAS$chileNA, '</td><tr></table>'), sep = '')
+```
+  
+</div>
+
+Associated lookup file:
+
+"*chile_id.csv*": splits of multiple replacements of duplicated values. Also, multiple replacements of missing data. The file includes non-standard column "**source**" .
+
+## Data And Associated Lookup Files Without Index
+
+ - The "*data*" dataset
+
+  <div style="margin-bottom:30px;">
+ 
+```{r echo = FALSE, results = 'asis'}
+ cat(c('<table><tr valign="top"><td>', DUPS$dataDUP , '</td><td>', NAS$dataNA, '</td><tr></table>'), sep = '')
+```
+  
+</div>
+
+Associated lookup file:
+
+"*lookup.csv*": mixed simple and multiple replacements of unique, duplicated and missing values. Split on duplicated value "cc" as illustration of the importance of row succession in replacement. The file contains standard columns only.
+
+ - The "*data_unique*" dataset
+
+  <div style="margin-bottom:30px;">
+ 
+```{r echo = FALSE, results = 'asis'}
+cat(c('<table><tr valign="top"><td>', DUPS$data_uniqueDUP , '</td><td>', NAS$data_uniqueNA, '</td><tr></table>'), sep = '')
+```
+  
+</div>
+
+Associated lookup file:
+   
+"*lookup_unique*": split across columns on missing values. The file contains standard columns only.
+
+### Other Associated Lookup Files
+   
+"*lookupDUP*", "*lookupNA*": multiple replacements *only* of duplicated or missing values in "*data_id*" dataset. Both files contain standard columns only.
+   
+"*chile_nadup*": multiple replacements only of duplicated and missing values in "*chile*" dataset. The file contains non-standard column "**source**" .
+
+<div style="margin-top:30px;">
+
+# Session Info
+
+</div>
+
+```{r sessioninfo, echo = FALSE}
+ sessionInfo()
+```
+
+```{r citation, include = FALSE}
+knitr::write_bib(file = 'citation.bib')
+```

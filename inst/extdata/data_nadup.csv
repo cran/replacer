@@ -1,0 +1,6 @@
+vars,oldVals,newVals
+a,cc,gg
+a,,MISSING
+b,,999
+b,2.142,0.1
+c,0.737,-0.121
