@@ -12,7 +12,7 @@
 
 <meta name="author" content="Dragos Bandur" />
 
-<meta name="date" content="2021-08-17" />
+<meta name="date" content="2021-09-01" />
 
 <title>Update Datasets With replacer</title>
 
@@ -48,7 +48,7 @@
 
 <h1 class="title toc-ignore">Update Datasets With replacer</h1>
 <h4 class="author">Dragos Bandur</h4>
-<h4 class="date">2021-08-17</h4>
+<h4 class="date">2021-09-01</h4>
 
 
 <div id="TOC">
@@ -71,12 +71,12 @@
 <p>The input and output data files are comma-separated values file format (<em>csv</em>). Various other file formats can therefore be processed upon conversion.</p>
 <p>Data processing such as cleanup, file format conversion and the appendage of new data are outside the scope of this utility.</p>
 <p>There could be several lookup files associated with one data file and vice versa which will be batch-processed.</p>
-<p>This vignette defines the terms related to replacement and to the elements of the lookup file, and details the procedure of creating an efficient lookup file, suggesting ways to maintain it relevant. Continues by introducing the two User-intended functions for single file and batch file processing and their internal workflow. Finally, it presents a screen output result obtained with a lookup without index and describes the datasets used in examples.</p>
+<p>This vignette defines the terms related to replacement and to the elements of the lookup file, and details the procedure of creating an efficient lookup file suggesting ways to maintain it relevant for future updates. It continues by introducing the two User-intended functions, for single file and batch file processing and describes their internal workflow. Finally, it presents a screen output result obtained with a lookup without index and introduces the datasets that are used for examples.</p>
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
-<p>This utility is designed for beginners to <code>R</code> working with outside-database files. It facilitates complex dataset updates with minimal prompt time.</p>
-<p>The choice for <code>data.table</code> is motivated by its concise and sound code, effectiveness and efficiency in processing large and complex datasets, and its independence on packages, or <em>verse</em>s, <a href="https://www.rdocumentation.org/packages/data.table/versions/1.14.0">other than base <code>R</code> itself</a>; this utility will only install <code>data.table</code> on User’s machine if it had not been there already.</p>
-<p>Familiarity with basic <code>R</code> commands is necessary. Familiarity with <code>data.table</code> is not, yet strongly recommended!</p>
+<p>This utility is accessible to beginners to <code>R</code> working with outside-database files. It facilitates complex dataset updates with minimal prompt time by employing User-friendly functions which automatically follow a decision tree rooted in User’s input.</p>
+<p>The choice for <code>data.table</code> is motivated by its concise and sound code, effectiveness and efficiency in processing large and complex datasets, and its independence on packages, or <em>verse</em>s, <a href="https://www.rdocumentation.org/packages/data.table/versions/1.14.0">other than base <code>R</code> itself</a>; this utility will only install <code>data.table</code> on User’s machine had it had not been installed already.</p>
+<p>Hence, familiarity with basic <code>R</code> commands is necessary. Familiarity with <code>data.table</code> is not, yet strongly recommended!</p>
 </div>
 </div>
 <div id="definitions" class="section level1" style="margin-top:30px;">
@@ -96,23 +96,23 @@
 <li><p><strong>split</strong>: in this context, recursive partition of multiple replacements into simple and multiple replacements</p></li>
 <li><p><strong>generic value</strong>: restricted replacement value used for multiple replacements of missing data</p></li>
 <li><p><strong>involved column</strong>: data column with the name listed in <strong>vars</strong> column of lookup</p></li>
-<li><p><strong>request</strong>: implicit information containing value type, value missingness, value uniqueness, value location, replacement type, replacement value in one row spanning the standard columns of lookup</p></li>
+<li><p><strong>request</strong>: implicit information containing value type, value missingness, value uniqueness, value location, replacement type, replacement value - in one row, spanning the standard columns of lookup</p></li>
 </ul>
 <p>Lookup may contain a combination of simple and multiple replacements, simple replacements only, multiple replacements only (i.e. missing only, duplicated values only, or mixed) as needed. Multiple replacements can be split as needed.</p>
 <p>On special circumstances, column “<strong>id</strong>” may be absent from lookup while the presence of the other three standard columns is mandatory. Modifying standard columns’ names will result in error. Any extra columns in lookup will be automatically removed during internal conformance checks on lookup.</p>
 <p>Multiple replacements apply to missing or duplicated non-missing values. While replacement values of duplicated values could be regarded as generic, they are entirely decided by the User. They are not restricted in this sense.</p>
-<p>In this version, replacements of missing data are restricted to words formed with the word roots <em>MIS|mis, PRE|pre, UN|un, ABS|abs</em> and the adverbs <em>YES|yes, NO|no</em> for missing values of type character, and with a number equal to- or larger than 3 integer <strong>9</strong>s (i.e. 999, 9999 etc.) for missing values of double or integer types.</p>
+<p>In this version, replacements of missing data are restricted to words formed with the word roots <em>MIS|mis, PRE|pre, UN|un, ABS|abs</em> and the adverbs <em>YES|yes, NO|no</em> for missing values of type character and with a number equal to- or larger than 3 integer <strong>9</strong>s (i.e. 999, 9999 etc.) for missing values of double or integer types.</p>
 <p>Short sentences beginning with any word root or adverb above may be accepted.</p>
 <div id="example" class="section level1" style="margin-top:30px;">
 <h1>Example</h1>
 </div>
-<p>Typical data replacement workflow: the initial data file and the corresponding lookup file (here named <em>“data.csv”</em> and <em>“lookup.csv”</em>) are saved in a directory, here named <em>dir</em>. Once the packaged is installed, the following commands should be typed at the <code>R</code> prompt:</p>
+<p>Typical data replacement workflow: the initial data file and the corresponding lookup file (here named <em>“data.csv”</em> and <em>“lookup.csv”</em>) are saved in a directory, here named <em>dir</em>. Once the package is installed, the following commands should be typed at the <code>R</code> prompt:</p>
 <pre><code>&gt; require(replacer)
 &gt; dir = &#39;C:/path/to/directory&#39;
 &gt; replaceVals(dir) ## to update the data</code></pre>
 <p>Results will show on screen (Section “Screen Output Example” presents the output of a different data/lookup pair). A csv file similar to <em>Out-Data</em> is saved on <em>dir</em>.</p>
 <div style="margin-bottom:430px;">
-<table class="table table-striped" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table table-bordered" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 <em>In-Data</em>
 </caption>
@@ -291,7 +291,7 @@ cc
 </tr>
 </tbody>
 </table>
-<table class="table table-hover" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table table-bordered" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 Lookup
 </caption>
@@ -494,7 +494,7 @@ source9
 </tr>
 </tbody>
 </table>
-<table class="table table-striped" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
+<table class="table table-bordered" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
 <em>Out-Data</em>
 </caption>
@@ -682,7 +682,7 @@ CA
 </table>
 </div>
 <p>This small example covers the complete set of lookup requests with index present. Column “<strong>Rw</strong>” is here for convenience only. It should not be manually created.</p>
-<p>The left-hand side table <em>In-Data</em> contains 3 columns of data. The two columns (“<strong>a</strong>” and “<strong>b</strong>”), involved in replacements, are of character respectively, of numeric data types and both contain missing, duplicates and unique values. The “<strong>uninvlvd</strong>” column in <em>In-Data</em>, is not listed in lookup’s <strong>vars</strong> therefore, not involved in replacements and remains unchanged in <em>Out-Data</em>. Non-standard column <strong>source</strong> in <em>Lookup</em> is not standard hence, is automatically removed.</p>
+<p>The left-hand side table, <em>In-Data</em>, contains 3 columns of data. The two columns (“<strong>a</strong>” and “<strong>b</strong>”), involved in replacements, are of character respectively, of numeric data types and both contain missing, duplicates and unique values. The “<strong>uninvlvd</strong>” column in <em>In-Data</em> is not listed in lookup’s <strong>vars</strong> therefore, not involved in replacements and remains unchanged in <em>Out-Data</em>. Non-standard column <strong>source</strong> in <em>Lookup</em> is not standard hence, is automatically removed.</p>
 <p>The <em>Out-Data</em> result requires a User-made lookup file with index; the replacement requests are as follows:</p>
 <ul>
 <li>simple replacements: missing and non-missing values at rows 2, 7, 8, 9 and 12</li>
@@ -691,7 +691,7 @@ CA
 <li>of duplicated values (<strong>id</strong> = <strong>0</strong>) at rows 3, 6, and 9</li>
 <li>of missing values (<strong>id</strong> = <strong>empty</strong>) at rows 7, 10, 11 and 12</li>
 </ul></li>
-<li>split replacements: for example, column “<strong>a</strong>” undergoes a split on the duplicated value “cc” present in 3 rows of <em>In-Data</em>; a potential multiple replacement of length 3 was split in a length 2 multiple replacement at rows 3 and 6 replaced by “DD” and a simple replacement at row 12 replaced by “CA.”</li>
+<li>split replacements: i.e. column “<strong>a</strong>” undergoes a split on the duplicated value “cc” present in 3 rows of <em>In-Data</em>; a <em>default</em> multiple replacement of length 3 was split in a length 2 multiple replacement at rows 3 and 6 replaced by “DD” and a simple replacement at row 12 replaced by “CA.”</li>
 </ul>
 <div id="user-made-index-in-lookup" class="section level1" style="margin-top:30px;">
 <h1>User-made Index In Lookup</h1>
@@ -725,17 +725,17 @@ CA
 </div>
 <div id="index-may-be-absent-in-lookup" class="section level3">
 <h3>Index <span style="color: red;">May</span> Be Absent In Lookup</h3>
-<p>This case requires a deeper insight in the structure of data file; when used standalone, helper function <code>whichDups()</code>, part of this utility, finds the duplicated values in all data columns.</p>
+<p>This case requires a deeper insight in the structure of the data file; when used standalone, helper function <code>whichDups()</code>, part of this utility, finds the duplicated values in all columns of the data file.</p>
 <p>The requirements for an effective lookup table without index are:</p>
 <ul>
 <li><p>rows in lookup <em>must</em> have the same succession the values set for replacement have in any involved data column</p></li>
 <li><p>simple replacements: if values set for replacement within any involved data column are unique (either missing or not), simple replacements without index are possible</p></li>
-<li><p>mixed simple and multiple replacements <span style="color: red;"><em>which do not undergo</em></span> splitting on any involved data column: if any involved data column contains unique, duplicated and/or missing values <em>and</em> some or all of the duplicated and/ missing values are set for multiple replacements(or not at all), replacements without index are possible</p></li>
+<li><p>mixed simple and multiple replacements <span style="color: red;"><em>which do not undergo</em></span> splitting on any involved data column: if any involved data column contains unique, duplicated and/or missing values <em>and</em> some or all of the duplicated and/or missing values are set for multiple replacements, replacements without index are possible on the unique values (missing or not)</p></li>
 <li><p>splitting: not implemented for duplicated values. For missing values splitting is allowed (see <strong>Note 3</strong>)</p></li>
 </ul>
-<p><strong>Note 1</strong> Whether the index is present or not in lookup, at the time of run the row order in the data file is identical to the row order in the data file at the completion of lookup. If necessary, an index named <em>other than id</em> could be built inside the dataset. Re-ordering the dataset by this index before run will retrieve the row order at the completion of lookup and will keep lookup relevant for future updates.</p>
-<p><strong>Note 2</strong> User should preserve the data type between values set for replacement and their replacements (i.e. integer/double to integer/double etc.). If an error message similar to “<em>Item 2 is type integer but the first item is type double. Please coerce …</em>” appears on screen, it means that 1) the requirement was violated and that 2) the helper function <code>con2fcoales()</code>, part of this utility, was unable to execute the necessary conversion. In cases like this, the User should start by investigating the data and the associated lookup.</p>
-<p><strong>Note 3</strong> Due to their special type, splitting on missing values <em>across</em> data columns is allowed when index is absent, i.e. if one involved data column contains one missing value and other involved columns contain missing values set (or not) for multiple replacements, splitting is allowed and the unique missing value can be replaced with a non-generic replacement value.</p>
+<p><strong>Note 1</strong> Whether the index is present or not in lookup, at the time of run the row order in the data file is identical to the row order in the data file at the completion of lookup. If necessary, an index named <em>other than “id”</em> could be built and preserved inside the dataset. Re-ordering the dataset by this index before run will retrieve the row order at the completion of lookup and will keep lookup relevant for future updates upon completion with new requests.</p>
+<p><strong>Note 2</strong> User should preserve the data type between values set for replacement and their replacements (i.e. integer/double to integer/double etc.). If an error message similar to “<em>Item 2 is type integer but the first item is type double. Please coerce …</em>” appears on screen, it means that 1) the requirement was violated and that 2) the helper function <code>con2fcoales()</code>, part of this utility, was unable to execute the necessary conversion. In such cases, investigation should start with the output messages and comments followed by data and the associated lookup.</p>
+<p><strong>Note 3</strong> Due to their special type, splitting on missing values <em>across</em> data columns is allowed when index is absent, i.e. if one involved data column contains one missing value and other involved columns contain missing values set (or not) for multiple replacements, splitting is allowed and the unique missing value can be replaced with a <em>non-generic</em> replacement value.</p>
 </div>
 </div>
 <div id="functions-intended-for-user" class="section level1" style="margin-top:30px;">
@@ -744,7 +744,7 @@ CA
 <p>There are two functions designed for direct use and set to display a series of messages and comments informing the User on the computational path taken and on findings along the way. While the messages can be turned off, the comments remain visible.</p>
 <p>Single file replacements are processed with function <code>replaceVals()</code>. When data and lookup files are named simply <em>“data.csv”</em> and <em>“lookup.csv”</em> the function only requires the path to the directory where these files are stored, written as length <strong>1</strong> quoted character, with forward “<strong>/</strong>” or, double backward “<strong>\\</strong>” slash and without end slash.</p>
 <p>At start, this function performs a series of conformance checks on lookup, excludes non-standard columns then separates the data into involved and uninvolved columns, rejoining them on exit.</p>
-<p>Batch file replacements are processed with function <code>bReplace()</code>. When messages are set to <strong>TRUE</strong> it offers an almost full range of messages/comments for each data/lookup input pair and request type. During run <code>bReplace()</code> calls <code>replaceVals()</code> function as many times as data/lookup pairs are on the list, displaying a counted list of messages, comments and data for each input pair.</p>
+<p>Batch file replacements are processed with function <code>bReplace()</code>. When messages are set to <strong>TRUE</strong> it offers an almost full range of messages/comments for each data/lookup input pair and request type. During run, <code>bReplace()</code> calls <code>replaceVals()</code> function as many times as data/lookup pairs are on the list, displaying a named list of messages, comments, updated data and counts for each input pair.</p>
 <p>Both functions save their updated data to the directory above, in csv file format.</p>
 <div id="internal-workflow" class="section level1" style="margin-top:30px;">
 <h1>Internal Workflow</h1>
@@ -755,13 +755,13 @@ CA
 <p>The function starts by identifying duplicated and/or missing values within the involved columns as well as eventual splits on missing values.</p>
 <p>If lookup requires multiple and simple replacements, the function separates lookup into 3 subsets: 1) of multiple replacements for duplicated values, for which it later creates an internal index, 2) multiple replacements for missing values for which an internal index is not necessary, and 3) the remainder subset containing unique values, including unique missing values, for which it also creates an internal index.</p>
 <p>In case of splitting on duplicated values with no index the function stops with an error.</p>
-<div id="index-for-duplicated-values" class="section level3">
-<h3>Index For Duplicated Values</h3>
+<div id="internal-index-for-duplicated-values" class="section level3">
+<h3>Internal Index For Duplicated Values</h3>
 <p>The function creates an internal index of row numbers corresponding to all elements of distinct subsets of duplicated values found within each involved data column and loops the function <code>data.table::set()</code> for replacements.</p>
 </div>
-<div id="no-index-for-missing-values" class="section level3">
-<h3>No Index For Missing Values</h3>
-<p>As mentioned above, no index is created for multiple replacements of missing values as there is only one generic value per data column (this utility uses no information on missing data beside the data type. For a different approach on this subject the User is directed to <em>data imputation</em> literature).</p>
+<div id="no-internal-index-for-missing-values" class="section level3">
+<h3>No Internal Index For Missing Values</h3>
+<p>As already mentioned, no index is created for multiple replacements of missing values as there is only one generic value per data column (this utility uses no information on missing data beside the data type. For a different approach on this subject the User is directed to <em>data imputation</em> literature).</p>
 <p>The subset of missing values is then <em>reshaped</em>, and the columns are <em>coalesced</em> (please check <code>data.table</code> Manual for these terms) with corresponding data columns, for each generic value present in lookup.</p>
 </div>
 <div id="index-for-unique-values" class="section level3">
@@ -772,18 +772,18 @@ CA
 <div id="if-the-index-is-found-present" class="section level2">
 <h2>If The Index Is Found Present</h2>
 <p>The function subsets the lookup using the special index values <strong>0</strong> and/or <strong>NA</strong> (or empty). At maximum, 3 subsets are formed as above. The replacement process is similar with the process used for absent index with the difference that unique values already have the User-made index of row numbers.</p>
-<p>In conclusion, whether single or batch file processing, all request types are processed in one run while the User can monitor the internal workflow.</p>
+<p>In conclusion, whether single or batch file processing, all request types are processed in one run while the User monitors the internal workflow.</p>
 </div>
 <div id="screen-output-example" class="section level1" style="margin-top:30px;">
 <h1>Screen Output Example</h1>
 </div>
 <div style="margin-bottom:20px;">
 <p>Presented below is an update of the “Chile” dataset from package <code>carData</code>.</p>
-<p>Type at the <code>R</code> prompt:</p>
-<pre><code>&gt; help(Chile, package = &quot;carData&quot;)
-&gt; require(replacer)
-&gt; dir = system.file(&quot;extdata&quot;, package = &quot;replacer&quot;)
-&gt; replaceVals(dir, &#39;chile.csv&#39;, &#39;chile_nadup.csv&#39;, save = FALSE)</code></pre>
+<p>At the <code>R</code> prompt, type or just copy/paste the commands:</p>
+<pre><code>help(Chile, package = &quot;carData&quot;)
+require(replacer)
+dir = system.file(&quot;extdata&quot;, package = &quot;replacer&quot;)
+replaceVals(dir, &#39;chile.csv&#39;, &#39;chile_nadup.csv&#39;, save = FALSE)</code></pre>
 </div>
 <div style="margin-bottom:30px;">
 <pre><code>reading data from: C:/R/R-4.1.0/library/replacer/extdata ...
@@ -843,12 +843,11 @@ $` multiple_NAs_repl_counts`
 <p>The requests were processed through a lookup table without User-made index.</p>
 <p>The first output block named “<em>updated_chile_using_chile_nadup</em>” displays the head and the tail of the updated data file.</p>
 <p>To view the complete updated dataset on screen, type:</p>
-<pre><code>&gt; upData = replaceVals(dir, &#39;chile.csv&#39;, &#39;chile_nadup.csv&#39;, save = FALSE)[[1]]
-&gt; View(upData)</code></pre>
+<pre><code>upData = replaceVals(dir, &#39;chile.csv&#39;, &#39;chile_nadup.csv&#39;, save = FALSE)[[1]]
+View(upData)</code></pre>
 <p>Next block, named “<em>multiple_dups_repl_counts</em>,” displays a count of duplicated value updates, processed on each involved column, by value and replacement value. In this example, the left-hand side of this block contains the complete cases of lookup.</p>
 <p>Finally, the third block named “<em>multiple_NAs_repl_counts</em>” shows counts of missing values replaced by generic values within respective involved columns. In other cases, unrequested replacements within any of the involved columns will be commented in the screen output (see Examples <code>replaceVal()</code>).</p>
-<p>All block names change upon input and request type.</p>
-<p>In case of error, a first read of the displayed messages/comments should hint of where in the process the error was triggered.</p>
+<p>All block names change upon input and request type; reading these names shows what was processed and what was not. In case of error, the displayed messages/comments should hint of where in the process the error occurred.</p>
 <div id="example-datasets" class="section level1" style="margin-top:30px;">
 <h1>Example Datasets</h1>
 </div>
@@ -976,32 +975,32 @@ Duplicated
 <thead>
 <tr>
 <th style="text-align:center;">
-statusquo11
+statusquo87
 </th>
 <th style="text-align:center;">
-statusquo112
+statusquo120
 </th>
 <th style="text-align:center;">
-income2
+statusquo92
 </th>
 <th style="text-align:center;">
-age20
+age8
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center;">
-1.40361
+1.25914
 </td>
 <td style="text-align:center;">
-0.11796
+-1.10757
 </td>
 <td style="text-align:center;">
-7500
+1.55399
 </td>
 <td style="text-align:center;">
-40
+30
 </td>
 </tr>
 </tbody>
@@ -1296,18 +1295,18 @@ d
 #&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     
 #&gt; 
 #&gt; other attached packages:
-#&gt; [1] replacer_1.0.0    kableExtra_1.3.4  knitr_1.33        magrittr_2.0.1   
-#&gt; [5] data.table_1.14.0
+#&gt; [1] replacer_1.0.1    kableExtra_1.3.4  knitr_1.33        data.table_1.14.0
 #&gt; 
 #&gt; loaded via a namespace (and not attached):
-#&gt;  [1] rstudioapi_0.13   xml2_1.3.2        rvest_1.0.1       munsell_0.5.0    
-#&gt;  [5] viridisLite_0.4.0 colorspace_2.0-2  R6_2.5.0          rlang_0.4.11     
-#&gt;  [9] highr_0.9         stringr_1.4.0     httr_1.4.2        tools_4.1.0      
-#&gt; [13] webshot_0.5.2     xfun_0.25         jquerylib_0.1.4   systemfonts_1.0.2
-#&gt; [17] htmltools_0.5.1.1 yaml_2.2.1        digest_0.6.27     lifecycle_1.0.0  
-#&gt; [21] formatR_1.11      sass_0.4.0        glue_1.4.2        evaluate_0.14    
-#&gt; [25] rmarkdown_2.10    stringi_1.7.3     compiler_4.1.0    bslib_0.2.5.1    
-#&gt; [29] scales_1.1.1      svglite_2.0.0     jsonlite_1.7.2</code></pre>
+#&gt;  [1] rstudioapi_0.13   xml2_1.3.2        magrittr_2.0.1    munsell_0.5.0    
+#&gt;  [5] rvest_1.0.1       viridisLite_0.4.0 colorspace_2.0-2  R6_2.5.1         
+#&gt;  [9] rlang_0.4.11      fastmap_1.1.0     highr_0.9         stringr_1.4.0    
+#&gt; [13] httr_1.4.2        tools_4.1.0       webshot_0.5.2     xfun_0.25        
+#&gt; [17] jquerylib_0.1.4   systemfonts_1.0.2 htmltools_0.5.2   yaml_2.2.1       
+#&gt; [21] digest_0.6.27     lifecycle_1.0.0   formatR_1.11      sass_0.4.0       
+#&gt; [25] glue_1.4.2        evaluate_0.14     rmarkdown_2.10    stringi_1.7.4    
+#&gt; [29] compiler_4.1.0    bslib_0.2.5.1     scales_1.1.1      svglite_2.0.0    
+#&gt; [33] jsonlite_1.7.2</code></pre>
 
 
 

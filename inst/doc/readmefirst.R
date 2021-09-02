@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
   knitr::opts_chunk$set(eval = FALSE)
 }
  )
-pks = c('data.table', 'magrittr', 'knitr', 'kableExtra', 'replacer')
+pks = c('data.table', 'knitr', 'kableExtra', 'replacer')
 if(!any(pks %in% search())) {
 invisible(lapply(pks, require, character.only = TRUE))
 }
@@ -27,12 +27,12 @@ odat$Rw = seq_len(nrow(odat)); setcolorder(odat, neworder = c('Rw', orderOdat))
 
 ## ----tables, echo = FALSE, message = FALSE------------------------------------
 options(knitr.kable.NA = "")
-kable(dat, format = 'html', caption = '*In-Data*', escape = TRUE, digits = 1) %>% 
-  kable_styling('striped', full_width = FALSE, position = 'float_left', font_size = 10)
-kable(lk, format = 'html', caption = 'Lookup', escape = TRUE, digits = 1) %>%
-  kable_styling('hover', 'stripped', 'responsive', full_width = FALSE, position = 'float_left', font_size = 10)
-kable(odat, format = 'html', caption = '*Out-Data*', escape = TRUE, digits = 1) %>%
-  kable_styling('striped', full_width = FALSE, position = 'float_left', font_size = 10)
+kable_styling(kable(dat, format = 'html', caption = '*In-Data*', escape = TRUE, digits = 1),
+               'bordered', full_width = FALSE, position = 'float_left', font_size = 10)
+kable_styling(kable(lk, format = 'html', caption = 'Lookup', escape = TRUE, digits = 1), 
+               'bordered', full_width = FALSE, position = 'float_left', font_size = 10)
+kable_styling(kable(odat, format = 'html', caption = '*Out-Data*', escape = TRUE, digits = 1), 
+               'bordered', full_width = FALSE, position = 'float_left', font_size = 10)
 
 ## ----dups_in_examples, include=FALSE, warning=FALSE---------------------------
  dir = system.file('extdata', package = 'replacer')

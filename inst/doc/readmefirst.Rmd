@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
   knitr::opts_chunk$set(eval = FALSE)
 }
  )
-pks = c('data.table', 'magrittr', 'knitr', 'kableExtra', 'replacer')
+pks = c('data.table', 'knitr', 'kableExtra', 'replacer')
 if(!any(pks %in% search())) {
 invisible(lapply(pks, require, character.only = TRUE))
 }
@@ -47,15 +47,15 @@ Data processing such as cleanup, file format conversion and the appendage of new
 
 There could be several lookup files associated with one data file and vice versa which will be batch-processed. 
 
-This vignette defines the terms related to replacement and to the elements of the lookup file, and details the procedure of creating an efficient lookup file, suggesting ways to maintain it relevant. Continues by introducing the two User-intended functions for single file and batch file processing and their internal workflow. Finally, it presents a screen output result obtained with a lookup without index and describes the datasets used in examples.
+This vignette defines the terms related to replacement and to the elements of the lookup file, and details the procedure of creating an efficient lookup file suggesting ways to maintain it relevant for future updates. It continues by introducing the two User-intended functions, for single file and batch file processing and describes their internal workflow. Finally, it presents a screen output result obtained with a lookup without index and introduces the datasets that are used for examples.
 
 ## Motivation
 
-This utility is designed for beginners to `R` working with outside-database files. It facilitates complex dataset updates with minimal prompt time. 
+This utility is accessible to beginners to `R` working with outside-database files. It facilitates complex dataset updates with minimal prompt time by employing User-friendly functions which automatically follow a decision tree rooted in User's input. 
 
-The choice for `data.table` is motivated by its concise and sound code, effectiveness and efficiency in processing large and complex datasets, and its independence on packages, or *verse*s, [other than base `R` itself](https://www.rdocumentation.org/packages/data.table/versions/1.14.0); this utility will only install `data.table` on User's machine if it had not been there already.
+The choice for `data.table` is motivated by its concise and sound code, effectiveness and efficiency in processing large and complex datasets, and its independence on packages, or *verse*s, [other than base `R` itself](https://www.rdocumentation.org/packages/data.table/versions/1.14.0); this utility will only install `data.table` on User's machine had it had not been installed already.
 
-Familiarity with basic `R` commands is necessary. Familiarity with `data.table` is not, yet strongly recommended!
+Hence, familiarity with basic `R` commands is necessary. Familiarity with `data.table` is not, yet strongly recommended!
 
 <div style="margin-top:30px;">
 
@@ -82,7 +82,7 @@ The following terms are specific to this utility:
   
   - **involved column**: data column with the name listed in **vars** column of lookup
 
-  - **request**: implicit information containing value type, value missingness, value uniqueness, value location, replacement type, replacement value in one row spanning the standard columns of lookup
+  - **request**: implicit information containing value type, value missingness, value uniqueness, value location, replacement type, replacement value - in one row, spanning the standard columns of lookup
   
 Lookup may contain a combination of simple and multiple replacements, simple replacements only, multiple replacements only (i.e. missing only, duplicated values only, or mixed) as needed. Multiple replacements can be split as needed.
     
@@ -90,7 +90,7 @@ On special circumstances, column "**id**" may be absent from lookup while the pr
   
 Multiple replacements apply to missing or duplicated non-missing values. While replacement values of duplicated values could be regarded as generic, they are entirely decided by the User. They are not restricted in this sense. 
 
-In this version, replacements of missing data are restricted to words formed with the word roots *MIS|mis, PRE|pre, UN|un, ABS|abs* and the adverbs *YES|yes, NO|no* for missing values of type character, and with a number equal to- or larger than 3 integer **9**s (i.e. 999, 9999 etc.) for missing values of double or integer types. 
+In this version, replacements of missing data are restricted to words formed with the word roots *MIS|mis, PRE|pre, UN|un, ABS|abs* and the adverbs *YES|yes, NO|no* for missing values of type character and with a number equal to- or larger than 3 integer **9**s (i.e. 999, 9999 etc.) for missing values of double or integer types. 
 
 Short sentences beginning with any word root or adverb above may be accepted.
 
@@ -100,7 +100,7 @@ Short sentences beginning with any word root or adverb above may be accepted.
 
 </div>
 
-Typical data replacement workflow: the initial data file and the corresponding lookup file (here named *"data.csv"* and *"lookup.csv"*) are saved in a directory, here named *dir*. Once the packaged is installed, the following commands should be typed at the `R` prompt:
+Typical data replacement workflow: the initial data file and the corresponding lookup file (here named *"data.csv"* and *"lookup.csv"*) are saved in a directory, here named *dir*. Once the package is installed, the following commands should be typed at the `R` prompt:
 
 ```
 > require(replacer)
@@ -123,19 +123,19 @@ odat$Rw = seq_len(nrow(odat)); setcolorder(odat, neworder = c('Rw', orderOdat))
 <div style="margin-bottom:430px;">
 ```{r tables, echo = FALSE, message = FALSE}
 options(knitr.kable.NA = "")
-kable(dat, format = 'html', caption = '*In-Data*', escape = TRUE, digits = 1) %>% 
-  kable_styling('striped', full_width = FALSE, position = 'float_left', font_size = 10)
-kable(lk, format = 'html', caption = 'Lookup', escape = TRUE, digits = 1) %>%
-  kable_styling('hover', 'stripped', 'responsive', full_width = FALSE, position = 'float_left', font_size = 10)
-kable(odat, format = 'html', caption = '*Out-Data*', escape = TRUE, digits = 1) %>%
-  kable_styling('striped', full_width = FALSE, position = 'float_left', font_size = 10)
+kable_styling(kable(dat, format = 'html', caption = '*In-Data*', escape = TRUE, digits = 1),
+               'bordered', full_width = FALSE, position = 'float_left', font_size = 10)
+kable_styling(kable(lk, format = 'html', caption = 'Lookup', escape = TRUE, digits = 1), 
+               'bordered', full_width = FALSE, position = 'float_left', font_size = 10)
+kable_styling(kable(odat, format = 'html', caption = '*Out-Data*', escape = TRUE, digits = 1), 
+               'bordered', full_width = FALSE, position = 'float_left', font_size = 10)
 ```   
 
 </div>
 
 This small example covers the complete set of lookup requests with index present. Column "**Rw**" is here for convenience only. It should not be manually created. 
 
-The left-hand side table *In-Data* contains 3 columns of data. The two columns  ("**a**" and "**b**"), involved in replacements, are of character respectively, of numeric data types and both contain missing, duplicates and unique values. The "**uninvlvd**" column in *In-Data*, is not listed in lookup's **vars** therefore, not involved in replacements and remains unchanged in *Out-Data*. Non-standard column **source** in *Lookup* is not standard hence, is automatically removed.
+The left-hand side table, *In-Data*, contains 3 columns of data. The two columns  ("**a**" and "**b**"), involved in replacements, are of character respectively, of numeric data types and both contain missing, duplicates and unique values. The "**uninvlvd**" column in *In-Data* is not listed in lookup's **vars** therefore, not involved in replacements and remains unchanged in *Out-Data*. Non-standard column **source** in *Lookup* is not standard hence, is automatically removed.
 
 The *Out-Data* result requires a User-made lookup file with index; the replacement requests are as follows:
  
@@ -143,7 +143,7 @@ The *Out-Data* result requires a User-made lookup file with index; the replaceme
   - multiple replacements:
     * of duplicated values (**id** = **0**) at rows 3, 6, and 9
     * of missing values (**id** = **empty**) at rows 7, 10, 11 and 12
-  - split replacements: for example, column "**a**" undergoes a split on the duplicated value "cc" present in 3 rows of *In-Data*; a potential multiple replacement of length 3 was split in a length 2 multiple replacement at rows 3 and 6 replaced by "DD" and a simple replacement at row 12 replaced by "CA".
+  - split replacements: i.e. column "**a**" undergoes a split on the duplicated value "cc" present in 3 rows of *In-Data*; a *default* multiple replacement of length 3 was split in a length 2 multiple replacement at rows 3 and 6 replaced by "DD" and a simple replacement at row 12 replaced by "CA".
 
 <div style="margin-top:30px;">
 
@@ -185,7 +185,7 @@ There is no need for index when lookup contains *only* multiple replacement requ
 
 ### Index <span style='color: red;'>May</span> Be Absent In Lookup
 
-This case requires a deeper insight in the structure of data file; when used standalone, helper function `whichDups()`, part of this utility, finds the duplicated values in all data columns.
+This case requires a deeper insight in the structure of the data file; when used standalone, helper function `whichDups()`, part of this utility, finds the duplicated values in all columns of the data file.
 
 The requirements for an effective lookup table without index are:
 
@@ -193,15 +193,15 @@ The requirements for an effective lookup table without index are:
 
   - simple replacements: if values set for replacement within any involved data column are unique (either missing or not), simple replacements without index are possible
     
-  - mixed simple and multiple replacements <span style='color: red;'>*which do not undergo*</span> splitting on any involved data column: if any involved data column contains unique, duplicated and/or missing values *and* some or all of the duplicated and/ missing values are set for multiple replacements(or not at all), replacements without index are possible
+  - mixed simple and multiple replacements <span style='color: red;'>*which do not undergo*</span> splitting on any involved data column: if any involved data column contains unique, duplicated and/or missing values *and* some or all of the duplicated and/or missing values are set for multiple replacements, replacements without index are possible on the unique values (missing or not)
     
   - splitting: not implemented for duplicated values. For missing values splitting is allowed (see **Note 3**)
     
-**Note 1** Whether the index is present or not in lookup, at the time of run the row order in the data file is identical to the row order in the data file at the completion of lookup. If necessary, an index named *other than id* could be built inside the dataset. Re-ordering the dataset by this index before run will retrieve the row order at the completion of lookup and will keep lookup relevant for future updates.
+**Note 1** Whether the index is present or not in lookup, at the time of run the row order in the data file is identical to the row order in the data file at the completion of lookup. If necessary, an index named *other than "id"* could be built and preserved inside the dataset. Re-ordering the dataset by this index before run will retrieve the row order at the completion of lookup and will keep lookup relevant for future updates upon completion with new requests.
     
-**Note 2** User should preserve the data type between values set for replacement and their replacements (i.e. integer/double to integer/double etc.). If an error message similar to "*Item 2 is type integer but the first item is type double. Please coerce ...*" appears on screen, it means that 1) the requirement was violated and that 2) the helper function `con2fcoales()`, part of this utility, was unable to execute the necessary conversion. In cases like this, the User should start by investigating the data and the associated lookup.
+**Note 2** User should preserve the data type between values set for replacement and their replacements (i.e. integer/double to integer/double etc.). If an error message similar to "*Item 2 is type integer but the first item is type double. Please coerce ...*" appears on screen, it means that 1) the requirement was violated and that 2) the helper function `con2fcoales()`, part of this utility, was unable to execute the necessary conversion. In such cases, investigation should start with the output messages and comments followed by data and the associated lookup.
 
-**Note 3** Due to their special type, splitting on missing values *across* data columns is allowed when index is absent, i.e. if one involved data column contains one missing value and other involved columns contain missing values set (or not) for multiple replacements, splitting is allowed and the unique missing value can be replaced with a non-generic replacement value.
+**Note 3** Due to their special type, splitting on missing values *across* data columns is allowed when index is absent, i.e. if one involved data column contains one missing value and other involved columns contain missing values set (or not) for multiple replacements, splitting is allowed and the unique missing value can be replaced with a *non-generic* replacement value.
 
 <div style="margin-top:30px;">
 
@@ -215,7 +215,7 @@ Single file replacements are processed with function `replaceVals()`. When data 
 
 At start, this function performs a series of conformance checks on lookup, excludes non-standard columns then separates the data into involved and uninvolved columns, rejoining them on exit.
 
-Batch file replacements are processed with function `bReplace()`. When messages are set to **TRUE** it offers an almost full range of messages/comments for each data/lookup input pair and request type. During run `bReplace()` calls `replaceVals()` function as many times as data/lookup pairs are on the list, displaying a counted list of messages, comments and data for each input pair.
+Batch file replacements are processed with function `bReplace()`. When messages are set to **TRUE** it offers an almost full range of messages/comments for each data/lookup input pair and request type. During run, `bReplace()` calls `replaceVals()` function as many times as data/lookup pairs are on the list, displaying a named list of messages, comments, updated data and counts for each input pair.
 
 Both functions save their updated data to the directory above, in csv file format.
 
@@ -235,13 +235,13 @@ If lookup requires multiple and simple replacements, the function separates look
 
 In case of splitting on duplicated values with no index the function stops with an error.
  
-### Index For Duplicated Values
+### Internal Index For Duplicated Values
 
 The function creates an internal index of row numbers corresponding to all elements of distinct subsets of duplicated values found within each involved data column and loops the function `data.table::set()` for replacements.
  
-### No Index For Missing Values
+### No Internal Index For Missing Values
 
-As mentioned above, no index is created for multiple replacements of missing values as there is only one generic value per data column (this utility uses no information on missing data beside the data type. For a different approach on this subject the User is directed to *data imputation* literature). 
+As already mentioned, no index is created for multiple replacements of missing values as there is only one generic value per data column (this utility uses no information on missing data beside the data type. For a different approach on this subject the User is directed to *data imputation* literature). 
 
 The subset of missing values is then *reshaped*, and the columns are *coalesced* (please check `data.table` Manual for these terms) with corresponding data columns, for each generic value present in lookup.
 
@@ -253,7 +253,7 @@ As stated above, simple replacements of unique values without User-made index ar
 
 The function subsets the lookup using the special index values **0** and/or **NA** (or empty). At maximum, 3 subsets are formed as above. The replacement process is similar with the process used for absent index with the difference that unique values already have the User-made index of row numbers. 
 
-In conclusion, whether single or batch file processing, all request types are processed in one run while the User can monitor the internal workflow.
+In conclusion, whether single or batch file processing, all request types are processed in one run while the User monitors the internal workflow.
 
 <div style="margin-top:30px;">
 
@@ -265,13 +265,13 @@ In conclusion, whether single or batch file processing, all request types are pr
 
 Presented below is an update of the "Chile" dataset from package `carData`. 
 
-Type at the `R` prompt:
+At the `R` prompt, type or just copy/paste the commands:
 
 ```
-> help(Chile, package = "carData")
-> require(replacer)
-> dir = system.file("extdata", package = "replacer")
-> replaceVals(dir, 'chile.csv', 'chile_nadup.csv', save = FALSE)
+help(Chile, package = "carData")
+require(replacer)
+dir = system.file("extdata", package = "replacer")
+replaceVals(dir, 'chile.csv', 'chile_nadup.csv', save = FALSE)
 ```
 </div>
 
@@ -343,17 +343,15 @@ The first output block named "*updated_chile_using_chile_nadup*" displays the he
 To view the complete updated dataset on screen, type:
 
 ```
-> upData = replaceVals(dir, 'chile.csv', 'chile_nadup.csv', save = FALSE)[[1]]
-> View(upData)
+upData = replaceVals(dir, 'chile.csv', 'chile_nadup.csv', save = FALSE)[[1]]
+View(upData)
 ```
 
 Next block, named "*multiple_dups_repl_counts*", displays a count of duplicated value updates, processed on each involved column, by value and replacement value. In this example, the left-hand side of this block contains the complete cases of lookup. 
 
 Finally, the third block named "*multiple_NAs_repl_counts*" shows counts of missing values replaced by generic values within respective involved columns. In other cases, unrequested replacements within any of the involved columns will be commented in the screen output (see Examples `replaceVal()`). 
 
-All block names change upon input and request type. 
-
-In case of error, a first read of the displayed messages/comments should hint of where in the process the error was triggered.
+All block names change upon input and request type; reading these names shows what was processed and what was not. In case of error, the displayed messages/comments should hint of where in the process the error occurred.
 
 <div style="margin-top:30px;">
 

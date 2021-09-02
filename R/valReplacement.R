@@ -152,7 +152,7 @@ sReplace = function(x, y0, uv) {
  if (!exists('id', y0)) {
       dupsX = whichDups(x[, uv, with = FALSE])
        nasX = x[, colSums(is.na(.SD))]
-        uNA = names(nasX[nasX == 1])
+        uNA = names(nasX[nasX == 1]) # unique NA, cross-column split
        vdup = y0[which(y0$oldVals %in% dupsX)]
         nas = y0[newVals %like% GEN]
        unas = intersect(uNA, y0[is.na(oldVals) & !newVals %like% GEN]$vars)
@@ -165,9 +165,9 @@ sReplace = function(x, y0, uv) {
         }
  if (exists('vdup') && n.dups + n.nas < nrow(y0)) {
  message('found duplicates and simple replacements but no index in lookup :\n
- would recommend User-made index\n\nproceeding any way ... \n')
+ would recommend User-made index\nproceeding any way ... \n')
  message('subsetting lookup and creating index ...\n')
-   y = y0[!nas, on = 'newVals'][!vdup, on = c('oldVals', 'newVals')]
+      y = y0[!nas, on = 'newVals'][!vdup, on = c('oldVals', 'newVals')]
  stopifnot("splits on duplicated values not implemented when missing id!"=!y$oldVals %in% vdup$oldVals)
   nunas = setdiff(y$vars, unas)
  if (length(unas)) {
