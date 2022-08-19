@@ -7,21 +7,21 @@
 replaceVals(dir, ..., save = TRUE)
 }
 \arguments{
-\item{dir}{Quoted character of length = 1L describing the path to the directory containing the data and associated
-lookup file(s), with either forward or double backward slash and no end slash.}
+\item{dir}{Quoted character of length = 1 describing the path to the directory containing the data and associated
+lookup files, with either forward or double backward slash and no end slash (e.g. \emph{"C:/path/to/directory"}).}
 
-\item{...}{Not used for default file names "data.csv", "lookup.csv". Otherwise, custom names including file extension,
-within quotation marks, such as "<data_name>.csv", "<lookup_name>.csv", \emph{entered in this order}!.}
+\item{...}{Not used when file names are "data.csv", "lookup.csv". Otherwise, custom names including file extension,
+within quotation marks, such as "<data_name>.csv", "<lookup_name>.csv", \strong{entered in this order!}.}
 
 \item{save}{Logical, default TRUE: save results to \emph{dir}. FALSE: display only. See Note below.}
 }
 \value{
-A one-run named list containing the updated data and multiple replacement counts. Also, csv file saved in the
-same directory under the name \emph{updated_<data_name>\emph{using}<lookup_name>}.
+A named list containing updated data and multiple replacement counts. Also, a csv file saved in the
+same directory, under the name updated_<data_name>\emph{using}<lookup_name>.csv.
 }
 \description{
 The function sends the prepared data.tables to \link[=sReplace]{sReplace}, receives updated data, displays a
-list of updated data and of counts of multiple replacements and saves the updated data to disk (see Details).
+list of updated data and of counts of multiple replacements and saves updated data to disk (see Details).
 }
 \details{
 The workflow:
@@ -43,21 +43,26 @@ The vignette contains definitions of terms.
 }
 }
 \section{Note}{
-
-In examples, please leave the function argument \emph{save} to FALSE. Otherwise, copy all content of the
-folder "extdata", found in package's root, into a directory on your machine. Use the absolute path
-to this directory as \emph{dir} argument (vignette example).
+ In examples, please leave argument \emph{save} to FALSE. Otherwise, copy all content of folder "extdata"
+found in the installed package root into a directory on your machine. Use the absolute path to this directory as
+\emph{dir} argument.
 }
 
 \examples{
 
-## Not run: datasets with default name "data.csv", "lookup.csv"
+## Not run: datasets with default names "data.csv", "lookup.csv" located in *dir*
 
 if (interactive()) {
  dir = system.file("extdata", package = "replacer")
  replaceVals(dir, save = FALSE)
+
+  ## no messages (not recommended!)
+ suppressMessages(replaceVals(dir, save = FALSE))
  }
 
+}
+\seealso{
+\link[=bReplace]{bReplace}, \link[=sReplace]{sReplace}
 }
 \keyword{data}
 \keyword{datasets}

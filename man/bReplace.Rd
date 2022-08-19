@@ -7,28 +7,27 @@
 bReplace(dir, x, save = TRUE, msgs = FALSE)
 }
 \arguments{
-\item{dir}{Quoted character of length = 1L describing the path to the directory containing the data and associated
-lookup file(s), with either forward or double backward slash and no end slash.}
+\item{dir}{Quoted character of length = 1 describing the path to the directory containing the data and associated
+lookup files, with either forward or double backward slash and no end slash (e.g. \emph{"C:/path/to/directory"}).}
 
-\item{x}{List of character vectors of length 2 each, containing full names of the data file and the associated
+\item{x}{List of character vectors each of length 2 containing full names of the data file and the associated
 lookup file, as described in \link[=replaceVals]{replaceVals}.}
 
-\item{save}{Logical, default TRUE: save results to directory. FALSE: display only.}
+\item{save}{Logical, default TRUE: save results to directory; FALSE: display only.}
 
-\item{msgs}{Logical, default FALSE: suppress messages. TRUE: print a counted list of messages within each run.}
+\item{msgs}{Logical, default FALSE: suppress messages. TRUE: print a named list containing messages specific to each run.}
 }
 \value{
-A multiple-run named list with updated data and multiple replacement count tables. Also, csv updated data files saved
+A named list displaying updated data and multiple replacement count tables. Also, updated csv files which are saved
 to \emph{dir}.
 }
 \description{
 User-intended function to process a list of pairs of data files and associated lookup files listed in this order.
 }
 \section{Note}{
-
-In examples, please leave the function argument \emph{save} to FALSE. Otherwise, copy all content of the
-folder "extdata", found in package's root, into a directory on your machine. Use the absolute path
-to this directory as \emph{dir} argument (vignette example).
+ In examples, please leave argument \emph{save} to FALSE. Otherwise, copy all content of folder "extdata"
+found in the installed package root into a directory on your machine. Use the absolute path to this directory as
+\emph{dir} argument.
 }
 
 \examples{
@@ -50,4 +49,7 @@ fs = list(c('data.csv', 'lookup.csv')
  bReplace(dir, fs, save = FALSE, msgs = TRUE)
  }
 
+}
+\seealso{
+\link[=replaceVals]{replaceVals}
 }

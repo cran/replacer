@@ -6,17 +6,19 @@
 #'
 #' @template dir-arg
 #'
-#' @param x List of character vectors of length 2 each, containing full names of the data file and the associated
+#' @param x List of character vectors each of length 2 containing full names of the data file and the associated
 #'   lookup file, as described in [replaceVals][replaceVals()].
-#' @param save Logical, default TRUE: save results to directory. FALSE: display only.
-#' @param msgs Logical, default FALSE: suppress messages. TRUE: print a counted list of messages within each run.
+#' @param save Logical, default TRUE: save results to directory; FALSE: display only.
+#' @param msgs Logical, default FALSE: suppress messages. TRUE: print a named list containing messages specific to each run.
 #'
 #' @return
 #'
-#' A multiple-run named list with updated data and multiple replacement count tables. Also, csv updated data files saved
+#' A named list displaying updated data and multiple replacement count tables. Also, updated csv files which are saved
 #' to *dir*.
 #'
 #' @template Note-replaceVals-template
+#'
+#' @seealso [replaceVals][replaceVals()]
 #'
 #' @export
 #'

@@ -26,28 +26,29 @@ function moves along the branches of a decision tree (see Details).
 The function starts by checking the presence of a User-made index in lookup.
 \subsection{If the index is found absent}{
 
-The function calls helper \link[=whichDups]{whichDups} and finds which data values are duplicated. Also, looks for missing
-values set for \emph{multiple} replacements and for splits on missing data. In case of mixed \emph{simple/multiple} requests the
-function splits lookup into maximum 3 subsets: one for \emph{simple} replacements, for which it creates an internal index,
-one for \emph{multiple replacements} of duplicated values for which it creates an internal index, and one for \emph{multiple
-replacements} of missing values for which an internal index is not necessary.
+The function calls the helper \link[=whichDups]{whichDups} to find the duplicated values in data. Also, looks for missing
+values set for \emph{multiple} replacements and for eventual splits on missing data. In case of mixed \emph{simple/multiple}
+requests the function splits lookup into maximum 3 subsets: one for \emph{simple} replacements, for which it creates an
+internal index, one for \emph{multiple replacements} of duplicated values for which it creates an internal index, and one
+for \emph{multiple replacements} of missing values for which an internal index is not necessary.
 \subsection{Index for multiple replacements of duplicated values}{
 
-The internal index contains row numbers corresponding to all distinct subsets of duplicated values found within each
-involved data column and loops the function \code{data.table::set()} for replacements on corresponding columns.
+The internal index contains row numbers corresponding to all the elements of distinct subsets of duplicated values
+found within each involved data column and loops the function \code{data.table::set()} to perform replacements on these
+columns.
 }
 
 \subsection{No Index for multiple replacements of missing values}{
 
 As mentioned above, no index is created for multiple replacements of missing values as there is only one generic value
-per data column. The missing values subset is then \emph{reshaped}, and the columns are \emph{coalesced} (\code{data.table} Manual)
-with corresponding data columns for each generic value entered in lookup.
+per data column. The missing values data subset is then \emph{reshaped}, and the columns are \emph{coalesced} (see \code{data.table}
+Manual) with corresponding data columns, for each generic value entered in lookup.
 }
 
 \subsection{Index For Unique Values}{
 
 As stated above, simple replacements of unique values without User-made index are possible. Once the internal index
-created, this subset is \emph{reshaped}, \emph{joined} with the data on index and the corresponding columns are \emph{coalesced}.
+created, the subset is \emph{reshaped}, \emph{joined} with the data on index and the corresponding columns are \emph{coalesced}.
 }
 
 }
@@ -61,7 +62,11 @@ difference that simple replacements already have User-made index.
 
 \subsection{Value replacement}{
 
-Following the decision tree described above, the function calls utility's helpers and functions from \strong{data.table}
-package to process all replacements requested by lookup in one run.
+Following the decision tree described above, the function calls utility's helpers and functions imported from the
+\strong{data.table} package to process all lookup requests, in one single run.
 }
+}
+\seealso{
+\link[data.table:dcast.data.table]{dcast}, \link[data.table:coalesce]{fcoalesce},
+\link[data.table:merge]{merge}, \link[data.table:assign]{set}
 }

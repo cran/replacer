@@ -12,13 +12,247 @@
 
 <meta name="author" content="Dragos Bandur" />
 
-<meta name="date" content="2021-09-01" />
+<meta name="date" content="2022-08-19" />
 
 <title>Update Datasets With replacer</title>
 
-<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
-<script src="data:application/javascript;base64,JChkb2N1bWVudCkucmVhZHkoZnVuY3Rpb24oKXsKICAgIGlmICh0eXBlb2YgJCgnW2RhdGEtdG9nZ2xlPSJ0b29sdGlwIl0nKS50b29sdGlwID09PSAnZnVuY3Rpb24nKSB7CiAgICAgICAgJCgnW2RhdGEtdG9nZ2xlPSJ0b29sdGlwIl0nKS50b29sdGlwKCk7CiAgICB9CiAgICBpZiAoJCgnW2RhdGEtdG9nZ2xlPSJwb3BvdmVyIl0nKS5wb3BvdmVyID09PSAnZnVuY3Rpb24nKSB7CiAgICAgICAgJCgnW2RhdGEtdG9nZ2xlPSJwb3BvdmVyIl0nKS5wb3BvdmVyKCk7CiAgICB9Cn0pOwo="></script>
-<link href="data:text/css,%0A%2Elightable%2Dminimal%20%7B%0Aborder%2Dcollapse%3A%20separate%3B%0Aborder%2Dspacing%3A%2016px%201px%3B%0Awidth%3A%20100%25%3B%0Amargin%2Dbottom%3A%2010px%3B%0A%7D%0A%2Elightable%2Dminimal%20td%20%7B%0Amargin%2Dleft%3A%205px%3B%0Amargin%2Dright%3A%205px%3B%0A%7D%0A%2Elightable%2Dminimal%20th%20%7B%0Amargin%2Dleft%3A%205px%3B%0Amargin%2Dright%3A%205px%3B%0A%7D%0A%2Elightable%2Dminimal%20thead%20tr%3Alast%2Dchild%20th%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%2300000050%3B%0Aempty%2Dcells%3A%20hide%3B%0A%7D%0A%2Elightable%2Dminimal%20tbody%20tr%3Afirst%2Dchild%20td%20%7B%0Apadding%2Dtop%3A%200%2E5em%3B%0A%7D%0A%2Elightable%2Dminimal%2Elightable%2Dhover%20tbody%20tr%3Ahover%20%7B%0Abackground%2Dcolor%3A%20%23f5f5f5%3B%0A%7D%0A%2Elightable%2Dminimal%2Elightable%2Dstriped%20tbody%20tr%3Anth%2Dchild%28even%29%20%7B%0Abackground%2Dcolor%3A%20%23f5f5f5%3B%0A%7D%0A%2Elightable%2Dclassic%20%7B%0Aborder%2Dtop%3A%200%2E16em%20solid%20%23111111%3B%0Aborder%2Dbottom%3A%200%2E16em%20solid%20%23111111%3B%0Awidth%3A%20100%25%3B%0Amargin%2Dbottom%3A%2010px%3B%0Amargin%3A%2010px%205px%3B%0A%7D%0A%2Elightable%2Dclassic%20tfoot%20tr%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dclassic%20tfoot%20tr%3Afirst%2Dchild%20td%20%7B%0Aborder%2Dtop%3A%200%2E14em%20solid%20%23111111%3B%0A%7D%0A%2Elightable%2Dclassic%20caption%20%7B%0Acolor%3A%20%23222222%3B%0A%7D%0A%2Elightable%2Dclassic%20td%20%7B%0Apadding%2Dleft%3A%205px%3B%0Apadding%2Dright%3A%205px%3B%0Acolor%3A%20%23222222%3B%0A%7D%0A%2Elightable%2Dclassic%20th%20%7B%0Apadding%2Dleft%3A%205px%3B%0Apadding%2Dright%3A%205px%3B%0Afont%2Dweight%3A%20normal%3B%0Acolor%3A%20%23222222%3B%0A%7D%0A%2Elightable%2Dclassic%20thead%20tr%3Alast%2Dchild%20th%20%7B%0Aborder%2Dbottom%3A%200%2E10em%20solid%20%23111111%3B%0A%7D%0A%2Elightable%2Dclassic%2Elightable%2Dhover%20tbody%20tr%3Ahover%20%7B%0Abackground%2Dcolor%3A%20%23F9EEC1%3B%0A%7D%0A%2Elightable%2Dclassic%2Elightable%2Dstriped%20tbody%20tr%3Anth%2Dchild%28even%29%20%7B%0Abackground%2Dcolor%3A%20%23f5f5f5%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20%7B%0Aborder%2Dtop%3A%203px%20double%20%23111111%3B%0Aborder%2Dbottom%3A%203px%20double%20%23111111%3B%0Awidth%3A%20100%25%3B%0Amargin%2Dbottom%3A%2010px%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20tfoot%20tr%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20tfoot%20tr%3Afirst%2Dchild%20td%20%7B%0Aborder%2Dtop%3A%203px%20double%20%23111111%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20caption%20%7B%0Acolor%3A%20%23222222%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20td%20%7B%0Apadding%2Dleft%3A%205px%3B%0Apadding%2Dright%3A%205px%3B%0Acolor%3A%20%23222222%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20th%20%7B%0Apadding%2Dleft%3A%205px%3B%0Apadding%2Dright%3A%205px%3B%0Afont%2Dweight%3A%20normal%3B%0Acolor%3A%20%23222222%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20tbody%20tr%3Alast%2Dchild%20td%20%7B%0Aborder%2Dbottom%3A%203px%20double%20%23111111%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%20thead%20tr%3Alast%2Dchild%20th%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23111111%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%2Elightable%2Dhover%20tbody%20tr%3Ahover%20%7B%0Abackground%2Dcolor%3A%20%23F9EEC1%3B%0A%7D%0A%2Elightable%2Dclassic%2D2%2Elightable%2Dstriped%20tbody%20tr%3Anth%2Dchild%28even%29%20%7B%0Abackground%2Dcolor%3A%20%23f5f5f5%3B%0A%7D%0A%2Elightable%2Dmaterial%20%7B%0Amin%2Dwidth%3A%20100%25%3B%0Awhite%2Dspace%3A%20nowrap%3B%0Atable%2Dlayout%3A%20fixed%3B%0Afont%2Dfamily%3A%20Roboto%2C%20sans%2Dserif%3B%0Aborder%3A%201px%20solid%20%23EEE%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0Amargin%2Dbottom%3A%2010px%3B%0A%7D%0A%2Elightable%2Dmaterial%20tfoot%20tr%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dmaterial%20tfoot%20tr%3Afirst%2Dchild%20td%20%7B%0Aborder%2Dtop%3A%201px%20solid%20%23EEE%3B%0A%7D%0A%2Elightable%2Dmaterial%20th%20%7B%0Aheight%3A%2056px%3B%0Apadding%2Dleft%3A%2016px%3B%0Apadding%2Dright%3A%2016px%3B%0A%7D%0A%2Elightable%2Dmaterial%20td%20%7B%0Aheight%3A%2052px%3B%0Apadding%2Dleft%3A%2016px%3B%0Apadding%2Dright%3A%2016px%3B%0Aborder%2Dtop%3A%201px%20solid%20%23eeeeee%3B%0A%7D%0A%2Elightable%2Dmaterial%2Elightable%2Dhover%20tbody%20tr%3Ahover%20%7B%0Abackground%2Dcolor%3A%20%23f5f5f5%3B%0A%7D%0A%2Elightable%2Dmaterial%2Elightable%2Dstriped%20tbody%20tr%3Anth%2Dchild%28even%29%20%7B%0Abackground%2Dcolor%3A%20%23f5f5f5%3B%0A%7D%0A%2Elightable%2Dmaterial%2Elightable%2Dstriped%20tbody%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dmaterial%2Elightable%2Dstriped%20thead%20tr%3Alast%2Dchild%20th%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ddd%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%20%7B%0Amin%2Dwidth%3A%20100%25%3B%0Awhite%2Dspace%3A%20nowrap%3B%0Atable%2Dlayout%3A%20fixed%3B%0Afont%2Dfamily%3A%20Roboto%2C%20sans%2Dserif%3B%0Aborder%3A%201px%20solid%20%23FFFFFF12%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0Amargin%2Dbottom%3A%2010px%3B%0Abackground%2Dcolor%3A%20%23363640%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%20tfoot%20tr%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%20tfoot%20tr%3Afirst%2Dchild%20td%20%7B%0Aborder%2Dtop%3A%201px%20solid%20%23FFFFFF12%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%20th%20%7B%0Aheight%3A%2056px%3B%0Apadding%2Dleft%3A%2016px%3B%0Apadding%2Dright%3A%2016px%3B%0Acolor%3A%20%23FFFFFF60%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%20td%20%7B%0Aheight%3A%2052px%3B%0Apadding%2Dleft%3A%2016px%3B%0Apadding%2Dright%3A%2016px%3B%0Acolor%3A%20%23FFFFFF%3B%0Aborder%2Dtop%3A%201px%20solid%20%23FFFFFF12%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%2Elightable%2Dhover%20tbody%20tr%3Ahover%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF12%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%2Elightable%2Dstriped%20tbody%20tr%3Anth%2Dchild%28even%29%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF12%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%2Elightable%2Dstriped%20tbody%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dmaterial%2Ddark%2Elightable%2Dstriped%20thead%20tr%3Alast%2Dchild%20th%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23FFFFFF12%3B%0A%7D%0A%2Elightable%2Dpaper%20%7B%0Awidth%3A%20100%25%3B%0Amargin%2Dbottom%3A%2010px%3B%0Acolor%3A%20%23444%3B%0A%7D%0A%2Elightable%2Dpaper%20tfoot%20tr%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A%2Elightable%2Dpaper%20tfoot%20tr%3Afirst%2Dchild%20td%20%7B%0Aborder%2Dtop%3A%201px%20solid%20%2300000020%3B%0A%7D%0A%2Elightable%2Dpaper%20thead%20tr%3Alast%2Dchild%20th%20%7B%0Acolor%3A%20%23666%3B%0Avertical%2Dalign%3A%20bottom%3B%0Aborder%2Dbottom%3A%201px%20solid%20%2300000020%3B%0Aline%2Dheight%3A%201%2E15em%3B%0Apadding%3A%2010px%205px%3B%0A%7D%0A%2Elightable%2Dpaper%20td%20%7B%0Avertical%2Dalign%3A%20middle%3B%0Aborder%2Dbottom%3A%201px%20solid%20%2300000010%3B%0Aline%2Dheight%3A%201%2E15em%3B%0Apadding%3A%207px%205px%3B%0A%7D%0A%2Elightable%2Dpaper%2Elightable%2Dhover%20tbody%20tr%3Ahover%20%7B%0Abackground%2Dcolor%3A%20%23F9EEC1%3B%0A%7D%0A%2Elightable%2Dpaper%2Elightable%2Dstriped%20tbody%20tr%3Anth%2Dchild%28even%29%20%7B%0Abackground%2Dcolor%3A%20%2300000008%3B%0A%7D%0A%2Elightable%2Dpaper%2Elightable%2Dstriped%20tbody%20td%20%7B%0Aborder%3A%200%3B%0A%7D%0A" rel="stylesheet" />
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -34,7 +268,188 @@
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -48,35 +463,66 @@
 
 <h1 class="title toc-ignore">Update Datasets With replacer</h1>
 <h4 class="author">Dragos Bandur</h4>
-<h4 class="date">2021-09-01</h4>
+<h4 class="date">2022-08-19</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#definitions">Definitions</a></li>
-<li><a href="#example">Example</a></li>
-<li><a href="#user-made-index-in-lookup">User-made Index In Lookup</a></li>
-<li><a href="#functions-intended-for-user">Functions Intended For User</a></li>
-<li><a href="#internal-workflow">Internal Workflow</a></li>
-<li><a href="#screen-output-example">Screen Output Example</a></li>
-<li><a href="#example-datasets">Example Datasets</a></li>
-<li><a href="#session-info">Session Info</a></li>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#definitions" id="toc-definitions">Definitions</a></li>
+<li><a href="#example" id="toc-example">Example</a></li>
+<li><a href="#user-made-index-in-lookup" id="toc-user-made-index-in-lookup">User-made Index In Lookup</a></li>
+<li><a href="#functions-intended-for-user" id="toc-functions-intended-for-user">Functions Intended For
+User</a></li>
+<li><a href="#internal-workflow" id="toc-internal-workflow">Internal
+Workflow</a></li>
+<li><a href="#screen-output-example" id="toc-screen-output-example">Screen Output Example</a></li>
+<li><a href="#example-datasets" id="toc-example-datasets">Example
+Datasets</a></li>
+<li><a href="#session-info" id="toc-session-info">Session Info</a></li>
 </ul>
 </div>
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p><font font_family="courier new"><code>replacer</code></font>, a value replacement utility currently based on package <a href="https://CRAN.R-project.org/package=data.table"><font family="courier"><code>data.table</code></font></a>, is intended for outside-database update of data. It requires the preparation of a <em>lookup</em> file which is a list of replacement <em>requests</em> with and, in special circumstances, without an <em>index</em> column.</p>
-<p>The input and output data files are comma-separated values file format (<em>csv</em>). Various other file formats can therefore be processed upon conversion.</p>
-<p>Data processing such as cleanup, file format conversion and the appendage of new data are outside the scope of this utility.</p>
-<p>There could be several lookup files associated with one data file and vice versa which will be batch-processed.</p>
-<p>This vignette defines the terms related to replacement and to the elements of the lookup file, and details the procedure of creating an efficient lookup file suggesting ways to maintain it relevant for future updates. It continues by introducing the two User-intended functions, for single file and batch file processing and describes their internal workflow. Finally, it presents a screen output result obtained with a lookup without index and introduces the datasets that are used for examples.</p>
+<p><font font_family="courier new"><code>replacer</code></font>, a value
+replacement utility currently based on package <a href="https://CRAN.R-project.org/package=data.table"><font family="courier"><code>data.table</code></font></a>,
+is intended for outside-database update of data. It requires the
+preparation of a <em>lookup</em> file which is a list of replacement
+<em>requests</em> with and, in special circumstances, without an
+<em>index</em> column.</p>
+<p>The input and output data files are comma-separated values file
+format (<em>csv</em>). Various other file formats can therefore be
+processed after conversion.</p>
+<p>Data processing such as cleanup, file format conversion and the
+appendage of new data are outside the scope of this utility.</p>
+<p>There could be several lookup files associated with one data file and
+vice versa which could be batch-processed.</p>
+<p>This vignette defines the terms related to the replacement and to the
+elements of the lookup file, and details the procedure of creating an
+efficient lookup file suggesting ways to maintain it relevant for future
+updates. It continues by introducing the two User-intended functions,
+for single file and batch file processing, and describes their internal
+workflow. Finally, it presents a screen output result obtained with a
+lookup without index and introduces the datasets that are used in
+examples.</p>
 <div id="motivation" class="section level2">
 <h2>Motivation</h2>
-<p>This utility is accessible to beginners to <code>R</code> working with outside-database files. It facilitates complex dataset updates with minimal prompt time by employing User-friendly functions which automatically follow a decision tree rooted in User’s input.</p>
-<p>The choice for <code>data.table</code> is motivated by its concise and sound code, effectiveness and efficiency in processing large and complex datasets, and its independence on packages, or <em>verse</em>s, <a href="https://www.rdocumentation.org/packages/data.table/versions/1.14.0">other than base <code>R</code> itself</a>; this utility will only install <code>data.table</code> on User’s machine had it had not been installed already.</p>
-<p>Hence, familiarity with basic <code>R</code> commands is necessary. Familiarity with <code>data.table</code> is not, yet strongly recommended!</p>
+<p>This utility is accessible to beginners to <code>R</code> working
+with outside-database files. It facilitates complex dataset updates with
+minimal prompt time by employing User-friendly functions which
+automatically follow a decision tree rooted in the presence of User-made
+index.</p>
+<p>The choice for <code>data.table</code> is motivated by its concise
+and sound code, effectiveness and efficiency in processing large and
+complex datasets, and its independence on packages, or <em>verse</em>s,
+<a href="https://www.rdocumentation.org/packages/data.table/versions/1.14.0">other
+than base <code>R</code> itself</a>; this utility will only install
+<code>data.table</code> on User’s machine, had it had not been installed
+already.</p>
+<p>Hence, familiarity with basic <code>R</code> commands is necessary.
+Familiarity with <code>data.table</code> is not, yet strongly
+recommended!</p>
 </div>
 </div>
 <div id="definitions" class="section level1" style="margin-top:30px;">
@@ -84,33 +530,70 @@
 </div>
 <p>The following terms are specific to this utility:</p>
 <ul>
-<li><p><strong>lookup</strong> table: a csv format data file containing at least 4 standard columns with standard column names:</p>
+<li><p><strong>lookup</strong> table: a csv format data file containing
+at least 4 standard columns with standard column names:</p>
 <ul>
-<li>“<strong>vars</strong>”: names of data columns involved in value replacement</li>
-<li>“<strong>oldVals</strong>”: values set for replacement found in the data file</li>
-<li>“<strong>newVals</strong>”: replacement values associated with <strong>oldVals</strong></li>
-<li>“<strong>id</strong>”: index containing row numbers and special values such as 0, NA (or empty)</li>
+<li>“<strong>vars</strong>”: names of data columns involved in value
+replacement</li>
+<li>“<strong>oldVals</strong>”: values set for replacement found in the
+data file</li>
+<li>“<strong>newVals</strong>”: replacement values associated with
+<strong>oldVals</strong></li>
+<li>“<strong>id</strong>”: index containing row numbers and special
+values such as 0, NA (or empty)</li>
 </ul></li>
-<li><p><strong>simple (or 1:1) replacement</strong>: one value from <strong>newVals</strong> replaces one value from <strong>oldVals</strong></p></li>
-<li><p><strong>multiple (or 1:many) replacement</strong>: one value from <strong>newVals</strong> replaces identical values from <strong>oldVals</strong></p></li>
-<li><p><strong>split</strong>: in this context, recursive partition of multiple replacements into simple and multiple replacements</p></li>
-<li><p><strong>generic value</strong>: restricted replacement value used for multiple replacements of missing data</p></li>
-<li><p><strong>involved column</strong>: data column with the name listed in <strong>vars</strong> column of lookup</p></li>
-<li><p><strong>request</strong>: implicit information containing value type, value missingness, value uniqueness, value location, replacement type, replacement value - in one row, spanning the standard columns of lookup</p></li>
+<li><p><strong>simple (or 1:1) replacement</strong>: one value from
+<strong>newVals</strong> replaces one value from
+<strong>oldVals</strong></p></li>
+<li><p><strong>multiple (or 1:many) replacement</strong>: one value from
+<strong>newVals</strong> replaces identical values from
+<strong>oldVals</strong></p></li>
+<li><p><strong>split</strong>: in this context, recursive partition of
+multiple replacements into simple and multiple replacements</p></li>
+<li><p><strong>generic value</strong>: restricted replacement value used
+for multiple replacements of missing data</p></li>
+<li><p><strong>involved column</strong>: data column with the name
+listed in <strong>vars</strong> column of lookup</p></li>
+<li><p><strong>request</strong>: implicit information containing value
+type, value missingness, value uniqueness, value location, replacement
+type, replacement value - all in one row, spanning the standard columns
+of lookup</p></li>
 </ul>
-<p>Lookup may contain a combination of simple and multiple replacements, simple replacements only, multiple replacements only (i.e. missing only, duplicated values only, or mixed) as needed. Multiple replacements can be split as needed.</p>
-<p>On special circumstances, column “<strong>id</strong>” may be absent from lookup while the presence of the other three standard columns is mandatory. Modifying standard columns’ names will result in error. Any extra columns in lookup will be automatically removed during internal conformance checks on lookup.</p>
-<p>Multiple replacements apply to missing or duplicated non-missing values. While replacement values of duplicated values could be regarded as generic, they are entirely decided by the User. They are not restricted in this sense.</p>
-<p>In this version, replacements of missing data are restricted to words formed with the word roots <em>MIS|mis, PRE|pre, UN|un, ABS|abs</em> and the adverbs <em>YES|yes, NO|no</em> for missing values of type character and with a number equal to- or larger than 3 integer <strong>9</strong>s (i.e. 999, 9999 etc.) for missing values of double or integer types.</p>
-<p>Short sentences beginning with any word root or adverb above may be accepted.</p>
+<p>Lookup may contain a combination of simple and multiple replacements,
+simple replacements only, multiple replacements only (i.e. missing only,
+duplicated values only, or mixed) as needed. Multiple replacements can
+be split as needed.</p>
+<p>On special circumstances, column “<strong>id</strong>” may be absent
+from lookup while the presence of the other three standard columns is
+mandatory. Modifying standard columns’ names will result in error. Any
+extra columns in lookup will be automatically removed during internal
+conformance checks on lookup.</p>
+<p>Multiple replacements apply to missing or duplicated non-missing
+values. While replacement values of duplicated values could be regarded
+as generic, they are entirely decided by the User. They are not
+restricted in this sense.</p>
+<p>In this version, replacements of missing data are restricted to words
+formed with the word roots <em>MIS|mis, PRE|pre, UN|un, ABS|abs</em> and
+the adverbs <em>YES|yes, NO|no</em> for missing values of type character
+and with a number equal to- or larger than 3 integer <strong>9</strong>s
+(i.e. 999, 9999 etc.) for missing values of double or integer types.</p>
+<p>Short sentences beginning with any word root or adverb above may be
+accepted as replacements.</p>
 <div id="example" class="section level1" style="margin-top:30px;">
 <h1>Example</h1>
 </div>
-<p>Typical data replacement workflow: the initial data file and the corresponding lookup file (here named <em>“data.csv”</em> and <em>“lookup.csv”</em>) are saved in a directory, here named <em>dir</em>. Once the package is installed, the following commands should be typed at the <code>R</code> prompt:</p>
+<p>Typical data replacement workflow: the initial data file and the
+corresponding lookup file (here named <em>“data.csv”</em> and
+<em>“lookup.csv”</em>) are saved in a directory, here named
+<em>dir</em>. Once the package is installed, the following commands
+should be typed at the <code>R</code> prompt:</p>
 <pre><code>&gt; require(replacer)
 &gt; dir = &#39;C:/path/to/directory&#39;
-&gt; replaceVals(dir) ## to update the data</code></pre>
-<p>Results will show on screen (Section “Screen Output Example” presents the output of a different data/lookup pair). A csv file similar to <em>Out-Data</em> is saved on <em>dir</em>.</p>
+&gt; replaceVals(dir) ## to update the values in &#39;data.csv&#39;</code></pre>
+<p>Results will show on screen (see Section “Screen Output Example”
+which presents the result of a different data/lookup pair and requests
+set). A csv file similar to <em>Out-Data</em> is saved on
+<em>dir</em>.</p>
 <div style="margin-bottom:430px;">
 <table class="table table-bordered" style="font-size: 10px; width: auto !important; float: left; margin-right: 10px;">
 <caption style="font-size: initial !important;">
@@ -681,17 +1164,36 @@ CA
 </tbody>
 </table>
 </div>
-<p>This small example covers the complete set of lookup requests with index present. Column “<strong>Rw</strong>” is here for convenience only. It should not be manually created.</p>
-<p>The left-hand side table, <em>In-Data</em>, contains 3 columns of data. The two columns (“<strong>a</strong>” and “<strong>b</strong>”), involved in replacements, are of character respectively, of numeric data types and both contain missing, duplicates and unique values. The “<strong>uninvlvd</strong>” column in <em>In-Data</em> is not listed in lookup’s <strong>vars</strong> therefore, not involved in replacements and remains unchanged in <em>Out-Data</em>. Non-standard column <strong>source</strong> in <em>Lookup</em> is not standard hence, is automatically removed.</p>
-<p>The <em>Out-Data</em> result requires a User-made lookup file with index; the replacement requests are as follows:</p>
+<p>This small example covers the complete set of lookup requests with
+index present. Column “<strong>Rw</strong>” is here for convenience
+only. It should not be manually created.</p>
+<p>The left-hand side table, <em>In-Data</em>, is the original data file
+and contains 3 columns of interest. The two columns
+(“<strong>a</strong>” and “<strong>b</strong>”) involved in
+replacements, are of character respectively, of numeric data types and
+both contain missing, duplicates and unique values. The
+“<strong>uninvlvd</strong>” column in <em>In-Data</em> is not listed in
+lookup’s <strong>vars</strong>, it is not involved in replacements and
+therefore, remains unchanged in <em>Out-Data</em>. Column
+<strong>source</strong> in <em>Lookup</em> is not standard and
+therefore, is automatically removed from computations.</p>
+<p>The <em>Out-Data</em> result was achieved with a lookup file with
+User-made index; the replacement requests were as follows:</p>
 <ul>
-<li>simple replacements: missing and non-missing values at rows 2, 7, 8, 9 and 12</li>
+<li>simple replacements: missing and non-missing values at rows 2, 7, 8,
+9 and 12</li>
 <li>multiple replacements:
 <ul>
-<li>of duplicated values (<strong>id</strong> = <strong>0</strong>) at rows 3, 6, and 9</li>
-<li>of missing values (<strong>id</strong> = <strong>empty</strong>) at rows 7, 10, 11 and 12</li>
+<li>of duplicated values (<strong>id</strong> = <strong>0</strong>) at
+rows 3, 6, and 9</li>
+<li>of missing values (<strong>id</strong> = <strong>empty</strong>) at
+rows 7, 10, 11 and 12</li>
 </ul></li>
-<li>split replacements: i.e. column “<strong>a</strong>” undergoes a split on the duplicated value “cc” present in 3 rows of <em>In-Data</em>; a <em>default</em> multiple replacement of length 3 was split in a length 2 multiple replacement at rows 3 and 6 replaced by “DD” and a simple replacement at row 12 replaced by “CA.”</li>
+<li>split replacements: i.e. column “<strong>a</strong>” underwent a
+split on the duplicated value “cc” present in 3 rows of
+<em>In-Data</em>; a <em>default</em> length 3 multiple replacement was
+split in a length 2 multiple replacement at rows 3 and 6 replaced by
+“DD” and a simple replacement at row 12 replaced by “CA”.</li>
 </ul>
 <div id="user-made-index-in-lookup" class="section level1" style="margin-top:30px;">
 <h1>User-made Index In Lookup</h1>
@@ -699,93 +1201,220 @@ CA
 <p>A User-made index may or, may not be necessary in lookup:</p>
 <div id="lookup-with-user-made-index" class="section level2">
 <h2>Lookup With User-made Index</h2>
-<p>A User-made index is the safest data value replacement procedure; it requires little insight in the structure of the data and insures fast review of large datasets. When the full range of request types including splitting are present, the index should contain the types of values presented in the above example, in the lookup column <strong>id</strong>.</p>
+<p>A User-made index is the safest value replacement procedure; it
+requires little insight in the structure of data and insures fast review
+of large datasets. When there is a full range of request types including
+splitting, the index should contain the value types shown in the above
+example, in lookup column <strong>id</strong>.</p>
 <div id="zero-value-present" class="section level3">
 <h3>Zero Value Present</h3>
-<p>There could be several distinct sets of duplicated values in any data column. If the purpose is multiple replacements of any/all of these sets (or subsets of these sets) then, for each subset the replacement request should take only one row in lookup, having <strong>0</strong> as index value. Corresponding replacement values are at User’s discretion.</p>
+<p>There could be several distinct sets of duplicated values in any data
+column. If the purpose is multiple replacements of any/all of these sets
+(or subsets of these sets) then, for each subset, the replacement
+request should take only one row in lookup having <strong>0</strong> as
+index value. Corresponding replacement values are at User’s
+discretion.</p>
 </div>
 <div id="empty-na-value-present" class="section level3">
 <h3>Empty (NA) Value Present</h3>
-<p>Same rules as above apply to multiple replacement of sets of missing values with two differences: 1) the corresponding index value is empty or NA, and 2) the generic value is restricted to a word or short sentence starting with any word root or adverb listed in “Definitions.” For generic values of numeric type, data type preservation (see <strong>Note 2</strong>) is not required (i.e. it is not required to enter 9999.0 instead of 9999 in the <strong>id</strong> row corresponding to missing values of double data type).</p>
-<p>Further versions may bring more generic value customization if necessary.</p>
+<p>Same rules as above apply to multiple replacement of sets of missing
+values with two differences: 1) the corresponding index value is empty
+or NA, and 2) the generic value is restricted to a word or short
+sentence starting with any word root or adverb listed in
+“Definitions”.</p>
+<p>For generic values of numeric type, data type preservation (see
+<strong>Note 2</strong>) is not required (i.e. it is not required to
+enter 9999.0 instead of 9999 in the <strong>id</strong> row
+corresponding to missing values of double data type).</p>
+<p>Further revisions may bring more generic value customization if
+necessary.</p>
 </div>
 <div id="row-number-present" class="section level3">
 <h3>Row Number Present</h3>
-<p>To request simple replacements, whether having unique, duplicated or missing values in <strong>oldVals</strong> column, the index should contain the corresponding row number in the data file. Sorting lookup by <strong>vars</strong> would maintain focus on one data column at a time.</p>
-<p>Standard columns <strong>oldVals</strong> and <strong>newVals</strong> in lookup, revert to the character data type upon completion since they contain combined numeric and character values. This behavior is normal.</p>
-<p>In conclusion, a User-made index covers all types of replacements, including splits.</p>
+<p>To request simple replacements, whether having unique, duplicated or
+missing values in <strong>oldVals</strong> column, the index should
+contain the corresponding data file row number. Sorting lookup by
+<strong>vars</strong> would maintain focus on one data column at a
+time.</p>
+<p>Standard columns <strong>oldVals</strong> and
+<strong>newVals</strong> in lookup, revert to the character data type
+upon completion since they contain numeric and character values
+combined. This behavior is normal.</p>
+<p>In conclusion, a User-made index covers all types of replacements,
+including splits.</p>
 </div>
 </div>
 <div id="lookup-without-user-made-index" class="section level2">
 <h2>Lookup Without User-made Index</h2>
-<p>There are special circumstances when the index is absent in lookup:</p>
+<p>There are special circumstances when the index is absent in
+lookup:</p>
 <div id="index-must-be-absent-in-lookup" class="section level3">
 <h3>Index <span style="color: red;">Must</span> Be Absent In Lookup</h3>
-<p>There is no need for index when lookup contains <em>only</em> multiple replacement requests of missing and/or duplicated values (Section “Example Datasets”). An extension of this case regarding splitting on missing values is explained in the sub-section below.</p>
+<p>There is no need for index when lookup contains <em>only</em>
+multiple replacement requests (Section “Screen Output Example”). An
+extension of this case involves splitting on missing values and is
+explained in the sub-section below.</p>
 </div>
 <div id="index-may-be-absent-in-lookup" class="section level3">
 <h3>Index <span style="color: red;">May</span> Be Absent In Lookup</h3>
-<p>This case requires a deeper insight in the structure of the data file; when used standalone, helper function <code>whichDups()</code>, part of this utility, finds the duplicated values in all columns of the data file.</p>
+<p>This case requires a deeper insight in the structure of the data file
+such as knowing in advance which values are duplicated. When used
+standalone, helper function <code>whichDups()</code> - part of this
+utility - finds the duplicated values in all columns of the data
+file.</p>
 <p>The requirements for an effective lookup table without index are:</p>
 <ul>
-<li><p>rows in lookup <em>must</em> have the same succession the values set for replacement have in any involved data column</p></li>
-<li><p>simple replacements: if values set for replacement within any involved data column are unique (either missing or not), simple replacements without index are possible</p></li>
-<li><p>mixed simple and multiple replacements <span style="color: red;"><em>which do not undergo</em></span> splitting on any involved data column: if any involved data column contains unique, duplicated and/or missing values <em>and</em> some or all of the duplicated and/or missing values are set for multiple replacements, replacements without index are possible on the unique values (missing or not)</p></li>
-<li><p>splitting: not implemented for duplicated values. For missing values splitting is allowed (see <strong>Note 3</strong>)</p></li>
+<li><p>rows in lookup <em>must</em> have the same succession as the
+succession of values in data. This applies to each involved column
+(e.g. if two data values located at rows 3 and 2000, need be updated in
+data column “X”, the corresponding requests for “X” in lookup should be
+located in <em>adjacent rows, in the same order</em>)</p></li>
+<li><p>simple replacements: if values set for replacement within any or
+all involved data columns are unique (either missing or not), simple
+replacements without index are possible</p></li>
+<li><p>mixed simple and multiple replacements: if any involved data
+column contains unique, duplicated and/or missing values <em>and</em>
+some or all of the duplicated and/or missing values are set for multiple
+replacements <span style="color: red;"><em>that do not
+undergo</em></span> splitting, replacements without index are
+possible</p></li>
+<li><p>splitting: not implemented for duplicated values when User-made
+index is absent. Although there are ways for implementing duplicate
+values splits without index, the necessary User time and data structure
+insight plead for the implementation of a User-made index. A special
+case of splitting is, however, allowed for missing values (see
+<strong>Note 3</strong>)</p></li>
 </ul>
-<p><strong>Note 1</strong> Whether the index is present or not in lookup, at the time of run the row order in the data file is identical to the row order in the data file at the completion of lookup. If necessary, an index named <em>other than “id”</em> could be built and preserved inside the dataset. Re-ordering the dataset by this index before run will retrieve the row order at the completion of lookup and will keep lookup relevant for future updates upon completion with new requests.</p>
-<p><strong>Note 2</strong> User should preserve the data type between values set for replacement and their replacements (i.e. integer/double to integer/double etc.). If an error message similar to “<em>Item 2 is type integer but the first item is type double. Please coerce …</em>” appears on screen, it means that 1) the requirement was violated and that 2) the helper function <code>con2fcoales()</code>, part of this utility, was unable to execute the necessary conversion. In such cases, investigation should start with the output messages and comments followed by data and the associated lookup.</p>
-<p><strong>Note 3</strong> Due to their special type, splitting on missing values <em>across</em> data columns is allowed when index is absent, i.e. if one involved data column contains one missing value and other involved columns contain missing values set (or not) for multiple replacements, splitting is allowed and the unique missing value can be replaced with a <em>non-generic</em> replacement value.</p>
+<p><strong>Note 1</strong> Whether the index is present or not in
+lookup, at the time of running the updates the row order in the data
+file must be identical to the row order in the data file as it was at
+the completion of lookup. If necessary, an index named <em>other than
+“id”</em> could be built and preserved inside the dataset and it will be
+treated as uninvolved column. Re-ordering the dataset by this index
+before run will retrieve the row order at the completion of lookup and
+will keep the lookup relevant for future data updates.</p>
+<p><strong>Note 2</strong> It is recommended that User preserves the
+data type between values set for replacement and their replacements
+(i.e. integer/double to integer/double etc.). Although the helper
+function <code>con2fcoales()</code> automatically solves such
+discrepancies in the background, if an error message similar to
+<em>“Item 2 is type integer but the first item is type double. Please
+coerce …”</em> appears on screen, it means that 1) the requirement was
+obviously violated and that 2) the severity of violation was beyond the
+mitigation capability of <code>con2fcoales()</code>.</p>
+<p>In such cases, a review of all output messages and a review of the
+data file and the associated lookup should ensue.</p>
+<p><strong>Note 3</strong> Due to their special type, splitting on
+missing values <em>across</em> data columns is allowed when index is
+absent, i.e. if one involved data column contains one missing value and
+other involved columns contain missing values set (or not) for multiple
+replacements, splitting is allowed and the unique missing value can be
+replaced with a <em>non-generic</em> replacement value.</p>
 </div>
 </div>
 <div id="functions-intended-for-user" class="section level1" style="margin-top:30px;">
 <h1>Functions Intended For User</h1>
 </div>
-<p>There are two functions designed for direct use and set to display a series of messages and comments informing the User on the computational path taken and on findings along the way. While the messages can be turned off, the comments remain visible.</p>
-<p>Single file replacements are processed with function <code>replaceVals()</code>. When data and lookup files are named simply <em>“data.csv”</em> and <em>“lookup.csv”</em> the function only requires the path to the directory where these files are stored, written as length <strong>1</strong> quoted character, with forward “<strong>/</strong>” or, double backward “<strong>\\</strong>” slash and without end slash.</p>
-<p>At start, this function performs a series of conformance checks on lookup, excludes non-standard columns then separates the data into involved and uninvolved columns, rejoining them on exit.</p>
-<p>Batch file replacements are processed with function <code>bReplace()</code>. When messages are set to <strong>TRUE</strong> it offers an almost full range of messages/comments for each data/lookup input pair and request type. During run, <code>bReplace()</code> calls <code>replaceVals()</code> function as many times as data/lookup pairs are on the list, displaying a named list of messages, comments, updated data and counts for each input pair.</p>
-<p>Both functions save their updated data to the directory above, in csv file format.</p>
+<p>There are two functions designed for direct use and set to display a
+series of messages and comments informing the User on the computational
+path taken and on findings along the way. While the messages can be
+turned off, the comments remain visible.</p>
+<p>Single file replacements are processed by function
+<code>replaceVals()</code>. When the data and lookup files are named
+simply <em>“data.csv”</em> and <em>“lookup.csv”</em> the function only
+requires the path to the directory where these files were stored,
+written as length <strong>1</strong> quoted character, with forward
+“<strong>/</strong>” or double backward “<strong>\\</strong>” slash and
+without end slash.</p>
+<p>At start, this function performs a series of conformance checks on
+data and lookup, excludes non-standard columns, separates the data into
+involved and uninvolved columns then, rejoins them on exit to preserve
+the data format.</p>
+<p>Batch file replacements are processed by function
+<code>bReplace()</code>. When messages are set to <strong>TRUE</strong>
+it offers an wide range of custom messages/comments for each data/lookup
+input pair and request type. During run, <code>bReplace()</code> calls
+<code>replaceVals()</code> function as many times as data/lookup pairs
+are on the names list, displays a named list of messages, comments,
+updated data and counts related to duplicated and/or missing values
+requests, for each pair.</p>
+<p>Both functions save their updated data to the directory above, in csv
+file format.</p>
 <div id="internal-workflow" class="section level1" style="margin-top:30px;">
 <h1>Internal Workflow</h1>
 </div>
-<p>Helper function <code>sReplace()</code> (described in Manual) is the data replacement workhorse for this utility. When called by <code>replaceVals()</code>, it firstly checks for index presence in lookup. Upon the result, the function moves along the branches of a decision tree:</p>
+<p>Helper function <code>sReplace()</code> (described in the Manual) is
+the data replacement workhorse for this utility. When called by
+<code>replaceVals()</code>, it firstly checks for index presence in
+lookup. Upon result, the function moves along the branches of a decision
+tree:</p>
 <div id="if-the-index-is-found-absent" class="section level2">
 <h2>If The Index Is Found Absent</h2>
-<p>The function starts by identifying duplicated and/or missing values within the involved columns as well as eventual splits on missing values.</p>
-<p>If lookup requires multiple and simple replacements, the function separates lookup into 3 subsets: 1) of multiple replacements for duplicated values, for which it later creates an internal index, 2) multiple replacements for missing values for which an internal index is not necessary, and 3) the remainder subset containing unique values, including unique missing values, for which it also creates an internal index.</p>
-<p>In case of splitting on duplicated values with no index the function stops with an error.</p>
+<p>The function starts by identifying duplicated and/or missing values
+within the involved columns as well as eventual splits on missing
+values.</p>
+<p>If lookup requires multiple and simple replacements, the function
+separates lookup into maximum 3 subsets: 1) of multiple replacements for
+duplicated values, for which it later creates an internal index list, 2)
+of multiple replacements for missing values for which an internal index
+is not necessary, and 3) the remainder subset containing unique values,
+including unique missing values, for which it also creates an internal
+index list.</p>
+<p>Requests for splitting on duplicated values with no index stop the
+function with an error.</p>
 <div id="internal-index-for-duplicated-values" class="section level3">
 <h3>Internal Index For Duplicated Values</h3>
-<p>The function creates an internal index of row numbers corresponding to all elements of distinct subsets of duplicated values found within each involved data column and loops the function <code>data.table::set()</code> for replacements.</p>
+<p>The function creates an internal index list of row numbers
+corresponding to all elements of distinct subsets of duplicated values
+found within each involved data column and loops the function
+<code>data.table::set()</code> for replacements.</p>
 </div>
 <div id="no-internal-index-for-missing-values" class="section level3">
 <h3>No Internal Index For Missing Values</h3>
-<p>As already mentioned, no index is created for multiple replacements of missing values as there is only one generic value per data column (this utility uses no information on missing data beside the data type. For a different approach on this subject the User is directed to <em>data imputation</em> literature).</p>
-<p>The subset of missing values is then <em>reshaped</em>, and the columns are <em>coalesced</em> (please check <code>data.table</code> Manual for these terms) with corresponding data columns, for each generic value present in lookup.</p>
+<p>As already mentioned, no index is created for multiple replacements
+of missing values as there is only one generic value per data column
+(this utility uses no other information on missing data beside the data
+type. For a different approach on this subject the User is directed to
+<em>data imputation</em> literature).</p>
+<p>The subset of missing values is then <em>reshaped</em>, and the
+columns are <em>coalesced</em> with corresponding data columns, for each
+generic value present in lookup.</p>
 </div>
 <div id="index-for-unique-values" class="section level3">
 <h3>Index For Unique Values</h3>
-<p>As stated above, simple replacements of unique values without User-made index are possible. Once the internal index is created, this subset is <em>reshaped</em>, <em>joined</em> with the data on index and then, the corresponding columns are <em>coalesced</em>.</p>
+<p>As stated above, simple replacements of unique values without
+User-made index are possible. Once the internal index is created, this
+subset is <em>reshaped</em>, <em>joined</em> with the data on index and
+then, the corresponding columns are <em>coalesced</em> (please see these
+terms in <code>data.table</code> Manual).</p>
 </div>
 </div>
 <div id="if-the-index-is-found-present" class="section level2">
 <h2>If The Index Is Found Present</h2>
-<p>The function subsets the lookup using the special index values <strong>0</strong> and/or <strong>NA</strong> (or empty). At maximum, 3 subsets are formed as above. The replacement process is similar with the process used for absent index with the difference that unique values already have the User-made index of row numbers.</p>
-<p>In conclusion, whether single or batch file processing, all request types are processed in one run while the User monitors the internal workflow.</p>
+<p>The function subsets the lookup using the special index values
+<strong>0</strong> and/or <strong>NA</strong> (or empty). At maximum, 3
+subsets are formed as above. The replacement process is similar with the
+process used for absent index with the difference that the unique values
+already have the User-made index of row numbers.</p>
+<p>In conclusion, whether single or batch file processing, all request
+types are processed in one run while Users have the ability of
+monitoring the internal workflow.</p>
 </div>
 <div id="screen-output-example" class="section level1" style="margin-top:30px;">
 <h1>Screen Output Example</h1>
 </div>
 <div style="margin-bottom:20px;">
-<p>Presented below is an update of the “Chile” dataset from package <code>carData</code>.</p>
-<p>At the <code>R</code> prompt, type or just copy/paste the commands:</p>
+<p>Presented below is an update performed on the “Chile” dataset from
+package <code>carData</code>.</p>
+<p>At the <code>R</code> prompt, type or just copy/paste the following
+commands:</p>
 <pre><code>help(Chile, package = &quot;carData&quot;)
 require(replacer)
 dir = system.file(&quot;extdata&quot;, package = &quot;replacer&quot;)
 replaceVals(dir, &#39;chile.csv&#39;, &#39;chile_nadup.csv&#39;, save = FALSE)</code></pre>
 </div>
 <div style="margin-bottom:30px;">
+<p>Screen output:</p>
 <pre><code>reading data from: C:/R/R-4.1.0/library/replacer/extdata ...
 
 completed reading data ...
@@ -839,20 +1468,46 @@ $` multiple_NAs_repl_counts`
     region population        sex        age  education     income  statusquo       vote 
          0          0          0          1         11         98         17        168 </code></pre>
 </div>
-<p>This update replaced the abbreviations used in the source data with full names and complete words, as well as, updated the <strong>population</strong> totals on few regions with fictitious values. For exemplification, missing values in column <strong>vote</strong> were replaced by a short sentence using the word root “<em>PRE</em>” listed above.</p>
-<p>The requests were processed through a lookup table without User-made index.</p>
-<p>The first output block named “<em>updated_chile_using_chile_nadup</em>” displays the head and the tail of the updated data file.</p>
+<p>This update has replaced the abbreviations used in the source data
+with full names and complete words, as well as, updated the
+<strong>population</strong> totals on few regions with fictitious
+values. Missing values in column <strong>vote</strong> were replaced by
+a short sentence using the word root “<em>PRE</em>” listed above.</p>
+<p>The requests were processed through a lookup table without User-made
+index.</p>
+<p>The first output block named
+“<em>updated_chile_using_chile_nadup</em>” displays the head and the
+tail of the updated data file.</p>
 <p>To view the complete updated dataset on screen, type:</p>
 <pre><code>upData = replaceVals(dir, &#39;chile.csv&#39;, &#39;chile_nadup.csv&#39;, save = FALSE)[[1]]
 View(upData)</code></pre>
-<p>Next block, named “<em>multiple_dups_repl_counts</em>,” displays a count of duplicated value updates, processed on each involved column, by value and replacement value. In this example, the left-hand side of this block contains the complete cases of lookup.</p>
-<p>Finally, the third block named “<em>multiple_NAs_repl_counts</em>” shows counts of missing values replaced by generic values within respective involved columns. In other cases, unrequested replacements within any of the involved columns will be commented in the screen output (see Examples <code>replaceVal()</code>).</p>
-<p>All block names change upon input and request type; reading these names shows what was processed and what was not. In case of error, the displayed messages/comments should hint of where in the process the error occurred.</p>
+<p>Next block, named “<em>multiple_dups_repl_counts</em>”, displays a
+count of duplicated value updates processed on each involved column, by
+value and replacement value. In this example, the left-hand side of this
+block contains the <em>complete cases</em> of lookup.</p>
+<p>Finally, the third block named “<em>multiple_NAs_repl_counts</em>”
+shows counts of missing values replaced by generic values within
+respective involved columns. In other cases, unrequested replacements
+within any of the involved columns will be commented in the screen
+output (see <code>replaceVals()</code> Examples).</p>
+<p>All block names change according to input and request type; these
+names show what was processed and what was not. In case of error, the
+displayed messages/comments should hint of where in the process the
+error occurred.</p>
 <div id="example-datasets" class="section level1" style="margin-top:30px;">
 <h1>Example Datasets</h1>
 </div>
-<p>The datasets in this package cover situations encountered in practice. They contain fictitious values inserted for exemplification purpose with the exception of “<em>chile</em>” dataset, a copy of the “Chile” dataset from package <code>carData</code>; some value replacements within the associated lookup files are also fictitious.</p>
-<p>The batch-file example (function <code>bReplace()</code>) includes data and associated lookup files presented below. Duplicated values and counts of missing values are shown for all these datasets. Column name indexing appears when several distinctive subsets of duplicated values are present in respective column.</p>
+<p>Although artificial, the datasets in this package cover situations
+encountered in practice. They contain fictitious values inserted for
+exemplification purpose with the exception of “<em>chile</em>” dataset,
+a copy of the “Chile” dataset from package <code>carData</code>;
+however, some replacement values within associated lookup files are also
+fictitious.</p>
+<p>The batch-file example (see <code>bReplace()</code> Examples)
+contains the names of data and associated lookup files presented below.
+Duplicated values and counts of missing values are shown below for all
+these datasets. When several distinctive subsets of duplicated values
+are present in an involved column the column’s name appears indexed.</p>
 <div id="data-and-associated-lookup-files-with-index" class="section level2">
 <h2>Data And Associated Lookup Files With Index</h2>
 <div style="margin-bottom:10px;">
@@ -958,10 +1613,15 @@ f
 </table>
 </div>
 <p>Associated lookup files:</p>
-<p>“<em>lookup_id.csv</em>”: mixed simple/multiple replacements of unique, duplicated and missing data, similar to the first example. The file contains standard columns only.</p>
-<p>“<em>lookup_idsimple.csv</em>”: simple replacements without <strong>0</strong> or <strong>NA</strong> values in “<strong>id</strong>.” The file contains standard columns only.</p>
+<p>“<em>lookup_id.csv</em>”: mixed simple/multiple replacements of
+unique, duplicated and missing data, similar to the typical replacement
+workflow example. The file contains standard columns only.</p>
+<p>“<em>lookup_idsimple.csv</em>”: simple replacements i.e. without
+<strong>0</strong> or <strong>NA</strong> values in
+“<strong>id</strong>”. The file contains standard columns only.</p>
 <ul>
-<li>The ‘<em>chile</em>’ dataset. Since these data contain large subsets of duplicated values, only a very small sample is shown below.</li>
+<li>The ‘<em>chile</em>’ dataset. Since these data contain large subsets
+of duplicated values, only a very small sample is shown below.</li>
 </ul>
 <div style="margin-bottom:30px;">
 
@@ -975,32 +1635,32 @@ Duplicated
 <thead>
 <tr>
 <th style="text-align:center;">
-statusquo87
+age27
 </th>
 <th style="text-align:center;">
-statusquo120
+statusquo48
 </th>
 <th style="text-align:center;">
-statusquo92
+statusquo100
 </th>
 <th style="text-align:center;">
-age8
+education2
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:center;">
-1.25914
+44
 </td>
 <td style="text-align:center;">
--1.10757
+1.46885
 </td>
 <td style="text-align:center;">
-1.55399
+-1.15762
 </td>
 <td style="text-align:center;">
-30
+PS
 </td>
 </tr>
 </tbody>
@@ -1073,7 +1733,9 @@ vote
 </table>
 </div>
 <p>Associated lookup file:</p>
-<p>“<em>chile_id.csv</em>”: splits of multiple replacements of duplicated values. Also, multiple replacements of missing data. The file includes non-standard column “<strong>source</strong>” .</p>
+<p>“<em>chile_id.csv</em>”: splits of multiple replacements of
+duplicated values. Also, multiple replacements of missing data. The file
+includes non-standard column “<strong>source</strong>”.</p>
 </div>
 <div id="data-and-associated-lookup-files-without-index" class="section level2">
 <h2>Data And Associated Lookup Files Without Index</h2>
@@ -1190,7 +1852,9 @@ d
 </table>
 </div>
 <p>Associated lookup file:</p>
-<p>“<em>lookup.csv</em>”: mixed simple and multiple replacements of unique, duplicated and missing values. Split on duplicated value “cc” as illustration of the importance of row succession in replacement. The file contains standard columns only.</p>
+<p>“<em>lookup.csv</em>”: mixed simple and multiple replacements of
+unique, duplicated and missing values. The file contains standard
+columns only.</p>
 <ul>
 <li>The “<em>data_unique</em>” dataset</li>
 </ul>
@@ -1268,45 +1932,50 @@ d
 </table>
 </div>
 <p>Associated lookup file:</p>
-<p>“<em>lookup_unique</em>”: split across columns on missing values. The file contains standard columns only.</p>
+<p>“<em>lookup_unique</em>”: split across columns on missing values. The
+file contains standard columns only.</p>
 <div id="other-associated-lookup-files" class="section level3">
 <h3>Other Associated Lookup Files</h3>
-<p>“<em>lookupDUP</em>,” “<em>lookupNA</em>”: multiple replacements <em>only</em> of duplicated or missing values in “<em>data_id</em>” dataset. Both files contain standard columns only.</p>
-<p>“<em>chile_nadup</em>”: multiple replacements only of duplicated and missing values in “<em>chile</em>” dataset. The file contains non-standard column “<strong>source</strong>” .</p>
+<p>“<em>lookupDUP</em>”, “<em>lookupNA</em>”: multiple replacements
+<em>only</em> of duplicated or missing values in “<em>data_id</em>”
+dataset. Both files contain standard columns only.</p>
+<p>“<em>chile_nadup</em>”: multiple replacements only of duplicated and
+missing values in “<em>chile</em>” dataset. The file contains
+non-standard column “<strong>source</strong>” .</p>
 </div>
 </div>
 <div id="session-info" class="section level1" style="margin-top:30px;">
 <h1>Session Info</h1>
 </div>
-<pre><code>#&gt; R version 4.1.0 (2021-05-18)
+<pre><code>#&gt; R version 4.2.1 (2022-06-23 ucrt)
 #&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)
-#&gt; Running under: Windows 10 x64 (build 19043)
+#&gt; Running under: Windows 10 x64 (build 19044)
 #&gt; 
 #&gt; Matrix products: default
 #&gt; 
 #&gt; locale:
 #&gt; [1] LC_COLLATE=C                          
-#&gt; [2] LC_CTYPE=English_United States.1252   
-#&gt; [3] LC_MONETARY=English_United States.1252
+#&gt; [2] LC_CTYPE=English_United States.utf8   
+#&gt; [3] LC_MONETARY=English_United States.utf8
 #&gt; [4] LC_NUMERIC=C                          
-#&gt; [5] LC_TIME=English_United States.1252    
+#&gt; [5] LC_TIME=English_United States.utf8    
 #&gt; 
 #&gt; attached base packages:
 #&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     
 #&gt; 
 #&gt; other attached packages:
-#&gt; [1] replacer_1.0.1    kableExtra_1.3.4  knitr_1.33        data.table_1.14.0
+#&gt; [1] replacer_1.0.2    kableExtra_1.3.4  knitr_1.39        data.table_1.14.2
 #&gt; 
 #&gt; loaded via a namespace (and not attached):
-#&gt;  [1] rstudioapi_0.13   xml2_1.3.2        magrittr_2.0.1    munsell_0.5.0    
-#&gt;  [5] rvest_1.0.1       viridisLite_0.4.0 colorspace_2.0-2  R6_2.5.1         
-#&gt;  [9] rlang_0.4.11      fastmap_1.1.0     highr_0.9         stringr_1.4.0    
-#&gt; [13] httr_1.4.2        tools_4.1.0       webshot_0.5.2     xfun_0.25        
-#&gt; [17] jquerylib_0.1.4   systemfonts_1.0.2 htmltools_0.5.2   yaml_2.2.1       
-#&gt; [21] digest_0.6.27     lifecycle_1.0.0   formatR_1.11      sass_0.4.0       
-#&gt; [25] glue_1.4.2        evaluate_0.14     rmarkdown_2.10    stringi_1.7.4    
-#&gt; [29] compiler_4.1.0    bslib_0.2.5.1     scales_1.1.1      svglite_2.0.0    
-#&gt; [33] jsonlite_1.7.2</code></pre>
+#&gt;  [1] rstudioapi_0.13   xml2_1.3.3        magrittr_2.0.3    munsell_0.5.0    
+#&gt;  [5] rvest_1.0.2       viridisLite_0.4.0 colorspace_2.0-3  R6_2.5.1         
+#&gt;  [9] rlang_1.0.4       fastmap_1.1.0     highr_0.9         stringr_1.4.0    
+#&gt; [13] httr_1.4.4        tools_4.2.1       webshot_0.5.3     xfun_0.32        
+#&gt; [17] cli_3.3.0         jquerylib_0.1.4   systemfonts_1.0.4 htmltools_0.5.3  
+#&gt; [21] yaml_2.3.5        digest_0.6.29     lifecycle_1.0.1   formatR_1.12     
+#&gt; [25] sass_0.4.2        glue_1.6.2        cachem_1.0.6      evaluate_0.16    
+#&gt; [29] rmarkdown_2.15    stringi_1.7.8     compiler_4.2.1    bslib_0.4.0      
+#&gt; [33] scales_1.2.0      svglite_2.1.0     jsonlite_1.8.0</code></pre>
 
 
 

@@ -6,6 +6,10 @@ new submission
 
  * Added dependency 'kableExtra' to DESCRIPTION
  * Removed dependency 'magrittr' from DESCRIPTION
- * Minor redactions to vignette
+ * Minor redaction to vignette
+ 
+# replacer 1.0.2
 
-
+ * Vignette review: added details and clarifications
+ * Redaction of some function descriptions: added `suppressWarnings(replaceVals())` to Examples
+ * Addressed cran comments regarding HTML version of Manual

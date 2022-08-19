@@ -1,7 +1,7 @@
 #'User-intended wrapper for single-file replacements
 #'
 #'@description The function sends the prepared data.tables to [sReplace][sReplace()], receives updated data, displays a
-#'  list of updated data and of counts of multiple replacements and saves the updated data to disk (see Details).
+#'  list of updated data and of counts of multiple replacements and saves updated data to disk (see Details).
 #'
 #'@keywords datasets data manip misc
 #'
@@ -9,24 +9,29 @@
 #'
 #'@template dir-arg
 #'
-#'@param ... Not used for default file names "data.csv", "lookup.csv". Otherwise, custom names including file extension,
-#'  within quotation marks, such as "<data_name>.csv", "<lookup_name>.csv", *entered in this order*!.
+#'@param ... Not used when file names are "data.csv", "lookup.csv". Otherwise, custom names including file extension,
+#'  within quotation marks, such as "<data_name>.csv", "<lookup_name>.csv", **entered in this order!**.
 #'@template save-arg
 #'
-#'@return A one-run named list containing the updated data and multiple replacement counts. Also, csv file saved in the
-#'  same directory under the name *updated_<data_name>_using_<lookup_name>*.
+#'@return A named list containing updated data and multiple replacement counts. Also, a csv file saved in the
+#'  same directory, under the name updated_<data_name>_using_<lookup_name>.csv.
 #'
 #'@template details-replaceVals-template
 #'
 #'@template Note-replaceVals-template
 #'
+#'@seealso [bReplace][bReplace()], [sReplace][sReplace()]
+#'
 #'@examples
 #'
-#' ## Not run: datasets with default name "data.csv", "lookup.csv"
+#' ## Not run: datasets with default names "data.csv", "lookup.csv" located in *dir*
 #'
 #' if (interactive()) {
 #'  dir = system.file("extdata", package = "replacer")
 #'  replaceVals(dir, save = FALSE)
+#'
+#'   ## no messages (not recommended!)
+#'  suppressMessages(replaceVals(dir, save = FALSE))
 #'  }
 #'
 #'@export
@@ -121,7 +126,7 @@
  names(outList) = c(paste0(names(results)[1L], whichNames[[1L]]
                            , '_using_', whichNames[[2L]])
                     , names(results)[-1L])
- return(outList)
+ print(outList, class = TRUE)
 }
 
 #' Helper function for value replacement
@@ -144,6 +149,9 @@
 #'
 #' @template details-sReplace-template
 #'
+#' @seealso [dcast][data.table::dcast()], [fcoalesce][data.table::fcoalesce()],
+#' [merge][data.table::merge()], [set][data.table::set()]
+#'
 
 sReplace = function(x, y0, uv) {
   id = "id" = newVals = oldVals = J = NULL # due to NSE notes in R CMD check
@@ -164,8 +172,7 @@ sReplace = function(x, y0, uv) {
                  ][, type.convert(.SD, as.is = TRUE)]
         }
  if (exists('vdup') && n.dups + n.nas < nrow(y0)) {
- message('found duplicates and simple replacements but no index in lookup :\n
- would recommend User-made index\nproceeding any way ... \n')
+ message('NOTE: found duplicates and simple replacements but no index in lookup,\nwould recommend User-made index\nproceeding any way ... \n')
  message('subsetting lookup and creating index ...\n')
       y = y0[!nas, on = 'newVals'][!vdup, on = c('oldVals', 'newVals')]
  stopifnot("splits on duplicated values not implemented when missing id!"=!y$oldVals %in% vdup$oldVals)
@@ -307,7 +314,7 @@ sReplace = function(x, y0, uv) {
                  , if (all(stillHasNA == 0L)) {
                     naCount
                    } else if (any(stillHasNA != 0L) && !identical(naCount, stillHasNA)) {
- cat('there are still missing values in some involved columns!\n')
+ cat('NOTE: there are still missing values in some involved columns!\n')
                     stillHasNA
                    } else if (identical(naCount, stillHasNA)) {
                     NULL
